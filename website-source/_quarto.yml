@@ -12,7 +12,7 @@ website:
       - text: Home
         href: ../../index.html
       - text: Code and Data
-        href: https://github.com/briansoonwookwon/DSAN_6000_Project.git
+        href: https://github.com/briansoonwookwon/DSAN_6000
       - text: Authors
         href: author.qmd           
       - text: References
