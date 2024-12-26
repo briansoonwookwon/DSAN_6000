@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Patterns in U.S. Political Discussions - Exploratory Data Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./nlp.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Patterns in U.S. Political Discussions</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/briansoonwookwon/DSAN_6000_Project.git"> 
+<span class="menu-text">Code and Data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./author.html"> 
+<span class="menu-text">Authors</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./references.html"> 
+<span class="menu-text">References</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/briansoonwookwon/DSAN_6000_Project.git"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./eda.html">EDA</a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./eda.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">EDA</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">NLP</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ml.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">ML</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Conclusion</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./feedback.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Feedback Discussion</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#executive-summary" id="toc-executive-summary" class="nav-link active" data-scroll-target="#executive-summary">Executive Summary</a></li>
+  <li><a href="#analytical-report" id="toc-analytical-report" class="nav-link" data-scroll-target="#analytical-report">Analytical Report</a>
+  <ul class="collapse">
+  <li><a href="#sec-subreddit-engagement" id="toc-sec-subreddit-engagement" class="nav-link" data-scroll-target="#sec-subreddit-engagement">Subreddit Political Engagement</a></li>
+  <li><a href="#sec-controversiality" id="toc-sec-controversiality" class="nav-link" data-scroll-target="#sec-controversiality">Controversiality vs.&nbsp;Comment Count</a></li>
+  <li><a href="#sec-top-authors" id="toc-sec-top-authors" class="nav-link" data-scroll-target="#sec-top-authors">Distribution of Political Contributions by Top Authors</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Exploratory Data Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="executive-summary" class="level1">
+<h1>Executive Summary</h1>
+<p>Through the exploratory data analysis (EDA) process, we aimed to understand the political engagement on Reddit by analyzing the comments and submissions from six major political subreddits: r/Conservative, r/democrats, r/Liberal, r/Libertarian, r/politics, and r/Republican. We focused on understanding the frequency of conversations about Trump and Biden, the controversiality of threads across the subreddits, and the distribution of political contributions by top authors.</p>
+<p>Our analysis revealed that political subreddits tend to discuss Trump more frequently than Biden, though this trend changes over time based on the subreddit and current events. We found that discussions on r/Republican then to be the most contraversial, while r/democrats tend to have the least controversial threads. There is not a clear link between the number of comments on a thread, the score of the thread, and the controversiality of the comments; however, this could be influenced by the fact that score is the sum of upvotes and downvotes and obfuscates the true popularity of a thread. Additionally, we found that the top posters in each subreddit tend to make up a large percentage of the total posts.</p>
+<p>Our analysis indicates that the political climate on Reddit is complex and multifaceted, with different subreddits having different levels of engagement and controversiality. Based on this research, we continue our analysis using natural language processing (NLP) and machine learning (ML) techniques to further understand the political climate on Reddit.</p>
+</section>
+<section id="analytical-report" class="level1">
+<h1>Analytical Report</h1>
+<section id="sec-subreddit-engagement" class="level2">
+<h2 class="anchored" data-anchor-id="sec-subreddit-engagement">Subreddit Political Engagement</h2>
+<p>Our first goal when performing exploratory data analysis was to identify the subreddits that have a large number of political posts that mention Biden or Trump. To do this, we examined the comments from many different politically oriented subreddits. We found that the subreddit r/Politics had by far the most mentions of the two presidents. However, given that the main purpose of this project is to compare and contrast the political engagement and climate of the major political parties, we decided to focus on six major subreddit, as seen in <a href="#tbl-subreddit-summary" class="quarto-xref">Table&nbsp;1</a>. These subreddits are r/Liberal, r/Conservative, r/Republican, r/Libertarian, r/democrats, and r/politics. We filtered the submissions to select only those submissions that mentioned Biden or Trump in order to focus on broad political trends. To analyze the submissions, we looked at the average score and the average number of comments per subreddit.</p>
+<div class="cell">
+<div id="tbl-subreddit-summary" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-subreddit-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Median scores reveal that while all subreddits have some popular posts, most submissions have low scores and few comments.
+</figcaption>
+<div aria-describedby="tbl-subreddit-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div>
+<div id="gkjxgddkwx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gkjxgddkwx table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gkjxgddkwx thead, #gkjxgddkwx tbody, #gkjxgddkwx tfoot, #gkjxgddkwx tr, #gkjxgddkwx td, #gkjxgddkwx th {
+  border-style: none;
+}
+
+#gkjxgddkwx p {
+  margin: 0;
+  padding: 0;
+}
+
+#gkjxgddkwx .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gkjxgddkwx .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gkjxgddkwx .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gkjxgddkwx .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gkjxgddkwx .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gkjxgddkwx .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gkjxgddkwx .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gkjxgddkwx .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gkjxgddkwx .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gkjxgddkwx .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gkjxgddkwx .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gkjxgddkwx .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gkjxgddkwx .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gkjxgddkwx .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gkjxgddkwx .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gkjxgddkwx .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gkjxgddkwx .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gkjxgddkwx .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gkjxgddkwx .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gkjxgddkwx .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gkjxgddkwx .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gkjxgddkwx .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gkjxgddkwx .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gkjxgddkwx .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gkjxgddkwx .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gkjxgddkwx .gt_left {
+  text-align: left;
+}
+
+#gkjxgddkwx .gt_center {
+  text-align: center;
+}
+
+#gkjxgddkwx .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gkjxgddkwx .gt_font_normal {
+  font-weight: normal;
+}
+
+#gkjxgddkwx .gt_font_bold {
+  font-weight: bold;
+}
+
+#gkjxgddkwx .gt_font_italic {
+  font-style: italic;
+}
+
+#gkjxgddkwx .gt_super {
+  font-size: 65%;
+}
+
+#gkjxgddkwx .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gkjxgddkwx .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gkjxgddkwx .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gkjxgddkwx .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gkjxgddkwx .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gkjxgddkwx .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gkjxgddkwx .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="7" class="gt_heading gt_title gt_font_normal" style="text-align: left; font-weight: bold;">Political Subreddit Submissions Mentioning Biden or Trump</th>
+</tr>
+<tr class="odd gt_heading">
+<th colspan="7" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="text-align: left; font-weight: bold;">Summary statistics on the number of comments and score by subreddit per submission</th>
+</tr>
+<tr class="header gt_col_headings gt_spanner_row">
+<th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_left" style="text-align: left;" data-quarto-table-cell-role="th" scope="col"></th>
+<th rowspan="2" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="vertical-align: top" scope="col"></th>
+<th colspan="2" id="Number of Comments" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: center; vertical-align: top;" scope="colgroup"><span class="gt_column_spanner">Number of Comments</span></th>
+<th colspan="2" id="Score" class="gt_center gt_columns_top_border gt_column_spanner_outer" data-quarto-table-cell-role="th" style="text-align: center; vertical-align: top;" scope="colgroup"><span class="gt_column_spanner">Score</span></th>
+<th rowspan="2" id="Number of Submissions" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="vertical-align: top" scope="col">Number of Submissions</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Average" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="vertical-align: top" scope="col">Average</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="vertical-align: top" scope="col">Median</th>
+<th id="Average" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="vertical-align: top" scope="col">Average</th>
+<th id="Median" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="vertical-align: top" scope="col">Median</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td id="stub_1_1" class="gt_row gt_center gt_stub" style="text-align: left;" data-quarto-table-cell-role="th" scope="row">r/Conservative</td>
+<td class="gt_row gt_right" headers="stub_1_1 color" style="background-color: #FFC0CB"></td>
+<td class="gt_row gt_right" headers="stub_1_1 Average Number of Comments" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">17.5</td>
+<td class="gt_row gt_right" headers="stub_1_1 Median Number of Comments" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">0</td>
+<td class="gt_row gt_right" headers="stub_1_1 Average Score" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">54.2</td>
+<td class="gt_row gt_right" headers="stub_1_1 Median Score" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_1 Number of Submissions">27,756</td>
+</tr>
+<tr class="even">
+<td id="stub_1_2" class="gt_row gt_center gt_stub" style="text-align: left;" data-quarto-table-cell-role="th" scope="row">r/democrats</td>
+<td class="gt_row gt_right" headers="stub_1_2 color" style="background-color: #0000FF"></td>
+<td class="gt_row gt_right" headers="stub_1_2 Average Number of Comments" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">14.4</td>
+<td class="gt_row gt_right" headers="stub_1_2 Median Number of Comments" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_2 Average Score" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">94.5</td>
+<td class="gt_row gt_right" headers="stub_1_2 Median Score" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_2 Number of Submissions">8,582</td>
+</tr>
+<tr class="odd">
+<td id="stub_1_3" class="gt_row gt_center gt_stub" style="text-align: left;" data-quarto-table-cell-role="th" scope="row">r/Liberal</td>
+<td class="gt_row gt_right" headers="stub_1_3 color" style="background-color: #87CEEB"></td>
+<td class="gt_row gt_right" headers="stub_1_3 Average Number of Comments" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">18.8</td>
+<td class="gt_row gt_right" headers="stub_1_3 Median Number of Comments" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">0</td>
+<td class="gt_row gt_right" headers="stub_1_3 Average Score" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">50.2</td>
+<td class="gt_row gt_right" headers="stub_1_3 Median Score" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_3 Number of Submissions">1,078</td>
+</tr>
+<tr class="even">
+<td id="stub_1_4" class="gt_row gt_center gt_stub" style="text-align: left;" data-quarto-table-cell-role="th" scope="row">r/Libertarian</td>
+<td class="gt_row gt_right" headers="stub_1_4 color" style="background-color: #FFD700"></td>
+<td class="gt_row gt_right" headers="stub_1_4 Average Number of Comments" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">17.0</td>
+<td class="gt_row gt_right" headers="stub_1_4 Median Number of Comments" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">0</td>
+<td class="gt_row gt_right" headers="stub_1_4 Average Score" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">32.9</td>
+<td class="gt_row gt_right" headers="stub_1_4 Median Score" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_4 Number of Submissions">561</td>
+</tr>
+<tr class="odd">
+<td id="stub_1_5" class="gt_row gt_center gt_stub" style="text-align: left;" data-quarto-table-cell-role="th" scope="row">r/politics</td>
+<td class="gt_row gt_right" headers="stub_1_5 color" style="background-color: #008000"></td>
+<td class="gt_row gt_right" headers="stub_1_5 Average Number of Comments" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">85.1</td>
+<td class="gt_row gt_right" headers="stub_1_5 Median Number of Comments" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">2</td>
+<td class="gt_row gt_right" headers="stub_1_5 Average Score" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">724.9</td>
+<td class="gt_row gt_right" headers="stub_1_5 Median Score" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_5 Number of Submissions">57,617</td>
+</tr>
+<tr class="even">
+<td id="stub_1_6" class="gt_row gt_center gt_stub" style="text-align: left;" data-quarto-table-cell-role="th" scope="row">r/Republican</td>
+<td class="gt_row gt_right" headers="stub_1_6 color" style="background-color: #FF0000"></td>
+<td class="gt_row gt_right" headers="stub_1_6 Average Number of Comments" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">5.9</td>
+<td class="gt_row gt_right" headers="stub_1_6 Median Number of Comments" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">1</td>
+<td class="gt_row gt_right" headers="stub_1_6 Average Score" style="border-left-width: 2px; border-left-style: solid; border-left-color: gray50">23.8</td>
+<td class="gt_row gt_right" headers="stub_1_6 Median Score" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50">5</td>
+<td class="gt_row gt_right" headers="stub_1_6 Number of Submissions">6,762</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="even">
+<td colspan="7" class="gt_sourcenote" style="text-align: left;">Source: Reddit data from June 2023 to July 2024</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p><a href="#fig-avg-comments-bar" class="quarto-xref">Figure&nbsp;1</a> shows the average number of comments received by each post in the different subreddits. The number of comments that the average post receives can give us a comparative measure of overall engagement across the subreddits when it comes to the presidential election. We can see from the plot that r/politics has the highest number of comments per submission, and r/Republican has the lowest, with less than 7. r/democrats has just under 15 comments per submission, while r/Conservative and r/Libertarian have slightly ore at ~17-18 comments per submission.</p>
+<div id="fig-avg-comments-bar" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-avg-comments-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/avg_comments.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-avg-comments-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: r/politics has the highest average number of comments per submission since it is the largest subreddit in our analysis.
+</figcaption>
+</figure>
+</div>
+<p>Next, we looked at the frequency of mentions of Biden and Trump between the subreddits. <a href="#fig-candidate-mentions-bar" class="quarto-xref">Figure&nbsp;2</a> shows whether the users in each subreddit are more concerned with their parties candidate or the opposing parties candidate. This plot also gives us an idea of the number of total posts mentioning the candidates in each subreddit. We can see that the largest subreddit in terms of number of candidate mentioning posts was by far r/Conservative, which had well over double the posts of the next subreddit. r/democrats and r/Republicans had a similar number of candidate mentioning posts, while r/Libertarian expectedly had a small fraction of the number of posts achieved by the other subreddits. In terms of specific candidate mentions, only r/democrats had a significant difference, with Trump being mentioned more often than Biden. Both r/Libertarian and r/Conservative had slightly more trump mentions, while r/Republican mentioned Biden slighlty more.</p>
+<div id="fig-candidate-mentions-bar" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-candidate-mentions-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/candidate_mentions.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-candidate-mentions-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Most political subreddits mention Trump slightly more than Biden.
+</figcaption>
+</figure>
+</div>
+<p>The next aspect of the data we wanted to look into was the average score per subreddit per candidate over time. The score of a reddit submission is the total number of thumbs up votes it receives minus the total number of thumbs down votes it receives. <a href="#fig-score-per-subreddit" class="quarto-xref">Figure&nbsp;3</a> shows plots for each subreddit, with the red line indicating mentions of Trump and the blue line indicating mentions of Biden. These are the weekly averages. We can see that across all subreddits there is an issue with the data around September 2023, when the scores are all 0. Across most of the subreddits neither of the candidates has a decisively higher score, with many subreddits seeing a large variation in the weekly averages of both candidates. The one exception to this is r/politics, where the average score is consistently higher for posts mentioning Trump, an interesting trend for a non-partisan subreddit.</p>
+<div id="fig-score-per-subreddit" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-score-per-subreddit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/score_per_subreddit.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-score-per-subreddit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Posts on r/politics tend to have higher scores if they mention Trump.
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The code used for this section is available <a href="https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/EDA.ipynb">here</a>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-controversiality" class="level2">
+<h2 class="anchored" data-anchor-id="sec-controversiality">Controversiality vs.&nbsp;Comment Count</h2>
+<p>Our second EDA goal was to understand the relationship between controversiality and comment count in different posts. First, we wanted to understand if certain subreddits were prone to more controversial posts than others. We started by examining the comments dataset, as summarized in <a href="#tbl-subreddit-comments-summary" class="quarto-xref">Table&nbsp;2</a>.</p>
+<div class="cell">
+<div id="tbl-subreddit-comments-summary" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-subreddit-comments-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: There is not a clear pattern between the average controversiality, comment count, and the submission score, with the extreme values falling in across different subreddits.
+</figcaption>
+<div aria-describedby="tbl-subreddit-comments-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="burovkxdzx" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#burovkxdzx table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#burovkxdzx thead, #burovkxdzx tbody, #burovkxdzx tfoot, #burovkxdzx tr, #burovkxdzx td, #burovkxdzx th {
+  border-style: none;
+}
+
+#burovkxdzx p {
+  margin: 0;
+  padding: 0;
+}
+
+#burovkxdzx .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#burovkxdzx .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#burovkxdzx .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#burovkxdzx .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#burovkxdzx .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#burovkxdzx .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#burovkxdzx .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#burovkxdzx .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#burovkxdzx .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#burovkxdzx .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#burovkxdzx .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#burovkxdzx .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#burovkxdzx .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#burovkxdzx .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#burovkxdzx .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#burovkxdzx .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#burovkxdzx .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#burovkxdzx .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#burovkxdzx .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#burovkxdzx .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#burovkxdzx .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#burovkxdzx .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#burovkxdzx .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#burovkxdzx .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#burovkxdzx .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#burovkxdzx .gt_left {
+  text-align: left;
+}
+
+#burovkxdzx .gt_center {
+  text-align: center;
+}
+
+#burovkxdzx .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#burovkxdzx .gt_font_normal {
+  font-weight: normal;
+}
+
+#burovkxdzx .gt_font_bold {
+  font-weight: bold;
+}
+
+#burovkxdzx .gt_font_italic {
+  font-style: italic;
+}
+
+#burovkxdzx .gt_super {
+  font-size: 65%;
+}
+
+#burovkxdzx .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#burovkxdzx .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#burovkxdzx .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#burovkxdzx .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#burovkxdzx .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#burovkxdzx .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#burovkxdzx .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <thead>
+    <tr class="gt_heading">
+      <td colspan="5" class="gt_heading gt_title gt_font_normal" style="text-align: left; font-weight: bold;">Political Subreddit Comments Mentioning Biden or Trump</td>
+    </tr>
+    <tr class="gt_heading">
+      <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="text-align: left; font-weight: bold;">Summary statistics on the score, controversiality, and length of comments by subreddit</td>
+    </tr>
+    <tr class="gt_col_headings gt_spanner_row">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id=""></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" style="text-align: center; vertical-align: middle;" scope="col" id="Average Score">Average Score</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="2" colspan="1" style="text-align: center; vertical-align: middle;" scope="col" id="Average Controversiality">Average Controversiality</th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" style="vertical-align: middle;" scope="colgroup" id="Comment Length (Words)">
+        <span class="gt_column_spanner">Comment Length (Words)</span>
+      </th>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;" scope="col" id="Average">Average</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="text-align: center; vertical-align: middle;" scope="col" id="Median">Median</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><th id="stub_1_1" scope="row" class="gt_row gt_center gt_stub" style="text-align: left;">r/Conservative</th>
+<td headers="stub_1_1 Average Score" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">7.50</td>
+<td headers="stub_1_1 Average Controversiality" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">0.05</td>
+<td headers="stub_1_1 Average Comment Length (Words)" class="gt_row gt_right" style="background-color: #FFC0CB; color: #000000;">14.44</td>
+<td headers="stub_1_1 Median Comment Length (Words)" class="gt_row gt_right" style="background-color: #FFC0CB; color: #000000;">1</td></tr>
+    <tr><th id="stub_1_2" scope="row" class="gt_row gt_center gt_stub" style="text-align: left;">r/democrats</th>
+<td headers="stub_1_2 Average Score" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">6.79</td>
+<td headers="stub_1_2 Average Controversiality" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50; background-color: #FFC0CB; color: #000000;">0.02</td>
+<td headers="stub_1_2 Average Comment Length (Words)" class="gt_row gt_right">24.21</td>
+<td headers="stub_1_2 Median Comment Length (Words)" class="gt_row gt_right">13</td></tr>
+    <tr><th id="stub_1_3" scope="row" class="gt_row gt_center gt_stub" style="text-align: left;">r/Liberal</th>
+<td headers="stub_1_3 Average Score" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">4.49</td>
+<td headers="stub_1_3 Average Controversiality" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">0.04</td>
+<td headers="stub_1_3 Average Comment Length (Words)" class="gt_row gt_right">26.75</td>
+<td headers="stub_1_3 Median Comment Length (Words)" class="gt_row gt_right">13</td></tr>
+    <tr><th id="stub_1_4" scope="row" class="gt_row gt_center gt_stub" style="text-align: left;">r/Libertarian</th>
+<td headers="stub_1_4 Average Score" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">5.98</td>
+<td headers="stub_1_4 Average Controversiality" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">0.07</td>
+<td headers="stub_1_4 Average Comment Length (Words)" class="gt_row gt_right" style="background-color: #87CEEB; color: #000000;">33.96</td>
+<td headers="stub_1_4 Median Comment Length (Words)" class="gt_row gt_right" style="background-color: #87CEEB; color: #000000;">19</td></tr>
+    <tr><th id="stub_1_5" scope="row" class="gt_row gt_center gt_stub" style="text-align: left;">r/politics</th>
+<td headers="stub_1_5 Average Score" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50; background-color: #87CEEB; color: #000000;">11.52</td>
+<td headers="stub_1_5 Average Controversiality" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50;">0.03</td>
+<td headers="stub_1_5 Average Comment Length (Words)" class="gt_row gt_right">29.56</td>
+<td headers="stub_1_5 Median Comment Length (Words)" class="gt_row gt_right">17</td></tr>
+    <tr><th id="stub_1_6" scope="row" class="gt_row gt_center gt_stub" style="text-align: left;">r/Republican</th>
+<td headers="stub_1_6 Average Score" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50; background-color: #FFC0CB; color: #000000;">3.31</td>
+<td headers="stub_1_6 Average Controversiality" class="gt_row gt_right" style="border-right-width: 2px; border-right-style: solid; border-right-color: gray50; background-color: #87CEEB; color: #000000;">0.10</td>
+<td headers="stub_1_6 Average Comment Length (Words)" class="gt_row gt_right">32.97</td>
+<td headers="stub_1_6 Median Comment Length (Words)" class="gt_row gt_right">17</td></tr>
+  </tbody>
+  <tfoot class="gt_sourcenotes">
+    <tr>
+      <td class="gt_sourcenote" colspan="5">Source: Reddit data from June 2023 to July 2024</td>
+    </tr>
+  </tfoot>
+  <tfoot class="gt_footnotes">
+    <tr>
+      <td class="gt_footnote" colspan="5"> Pink indicates lower values, while blue indicates higher values.</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>From the <a href="#tbl-subreddit-comments-summary" class="quarto-xref">Table&nbsp;2</a>, we see that r/Republican has the highest average controversiality, followed by r/Libertarian. r/democrats has the lowest average controversiality. We also see that r/Republican has the lowest average score, while r/politics has the highest. r/Libertarian seems to have the longest comments on average, with both the highest mean and median word count per comment.</p>
+<p>As seen in <a href="#fig-controversiality-bar" class="quarto-xref">Figure&nbsp;4</a> found that r/Republican had the most percentage of posts being considered controversial, with almost 8%. This was followed by r/Conservative and r/Libertarian. Interestingly, there seems to be a clear political divide between the rate of controversial posts across the aisle, with more conservative subreddits having a higher rate of controversial posts.</p>
+<div id="fig-controversiality-bar" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-controversiality-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/controversiality-by-subreddit.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-controversiality-bar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Left leaning subreddits tend to have fewer controversial comments than right leaning subreddits.
+</figcaption>
+</figure>
+</div>
+<p>Using the link between submissions and comment count, we can see the relationship between the number of comments on a submission, the size of the thread, and the average controversiality of the comments. A comment is rated as either being controversial or not, so a higher average controversiality indicates that more comments on a submission are controversial. Generally, controversiality seems to go down as the number of comments goes up, as seen in <a href="#fig-controversiality-vs-comment-count" class="quarto-xref">Figure&nbsp;5</a>.</p>
+<div id="fig-controversiality-vs-comment-count" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-controversiality-vs-comment-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/controversiality-vs-comment-count.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-controversiality-vs-comment-count-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: As the size of the thread goes up, the average controversiality goes down.
+</figcaption>
+</figure>
+</div>
+<p>To investigate further, we divide the plot by subreddit in <a href="#fig-controversiality-vs-comment-count-by-subreddit" class="quarto-xref">Figure&nbsp;6</a>. We gain more information about each subreddit’s relationship between controversiality and comment count. We see that r/Conservative and r/politics have more controversial posts, but overall more comments leads to less controversiality. r/Republicans shows that more controversiality leads to more comments, as does r/Libertarian. r/democrats and r/Liberals generally have few controversial posts, and more comments doesn’t necessarily stem from more controversiality.</p>
+<div id="fig-controversiality-vs-comment-count-by-subreddit" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-controversiality-vs-comment-count-by-subreddit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/controversiality-vs-comment-count-by-subreddit.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-controversiality-vs-comment-count-by-subreddit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Left leaning subreddits tend to have low controversiality for all sized threads, while right leaning subreddits tend towards more controversiality.
+</figcaption>
+</figure>
+</div>
+<p>When looking at the top 5 submissions with the most comments per subreddit, we see that the most controversial posts are not necessarily the ones with the most comments. In <a href="#tbl-top-5-threads" class="quarto-xref">Table&nbsp;3</a>, the most controversial posts do not have the most comments. There is also not a clear pattern between the average controversiality, comment count, and the submission score.</p>
+<div class="cell">
+<div id="tbl-top-5-threads" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-top-5-threads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: For each subreddit, the threads with the most comments have a wide range of scores and controversiality levels.
+</figcaption>
+<div aria-describedby="tbl-top-5-threads-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div>
+<div id="qmstbllsdt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qmstbllsdt table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#qmstbllsdt thead, #qmstbllsdt tbody, #qmstbllsdt tfoot, #qmstbllsdt tr, #qmstbllsdt td, #qmstbllsdt th {
+  border-style: none;
+}
+
+#qmstbllsdt p {
+  margin: 0;
+  padding: 0;
+}
+
+#qmstbllsdt .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#qmstbllsdt .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#qmstbllsdt .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#qmstbllsdt .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#qmstbllsdt .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#qmstbllsdt .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#qmstbllsdt .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#qmstbllsdt .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#qmstbllsdt .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#qmstbllsdt .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#qmstbllsdt .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qmstbllsdt .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#qmstbllsdt .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#qmstbllsdt .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#qmstbllsdt .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qmstbllsdt .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#qmstbllsdt .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#qmstbllsdt .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#qmstbllsdt .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qmstbllsdt .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#qmstbllsdt .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qmstbllsdt .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#qmstbllsdt .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qmstbllsdt .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qmstbllsdt .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qmstbllsdt .gt_left {
+  text-align: left;
+}
+
+#qmstbllsdt .gt_center {
+  text-align: center;
+}
+
+#qmstbllsdt .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#qmstbllsdt .gt_font_normal {
+  font-weight: normal;
+}
+
+#qmstbllsdt .gt_font_bold {
+  font-weight: bold;
+}
+
+#qmstbllsdt .gt_font_italic {
+  font-style: italic;
+}
+
+#qmstbllsdt .gt_super {
+  font-size: 65%;
+}
+
+#qmstbllsdt .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#qmstbllsdt .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#qmstbllsdt .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#qmstbllsdt .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#qmstbllsdt .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#qmstbllsdt .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#qmstbllsdt .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table do-not-create-environment cell table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="5" class="gt_heading gt_title gt_font_normal" style="text-align: left; font-weight: bold;">Top 5 Threads by Subreddit</th>
+</tr>
+<tr class="odd gt_heading">
+<th colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="text-align: left; font-weight: bold;">Top 5 threads with the most comments for each political subreddit on posts mentioning Biden or Trump</th>
+</tr>
+<tr class="header gt_col_headings">
+<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="Number of Comments" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Number of Comments</th>
+<th id="Average Comment Controversiality" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Average Comment Controversiality</th>
+<th id="Score" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Score</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd gt_row_group_first">
+<td rowspan="5" class="gt_row gt_left gt_stub_row_group" headers="r/Conservative stub_1_1 stub_1">r/Conservative</td>
+<td class="gt_row gt_right" headers="r/Conservative stub_1_1 color" style="background-color: #FFC0CB"></td>
+<td class="gt_row gt_right" headers="r/Conservative stub_1_1 Number of Comments">4,984</td>
+<td class="gt_row gt_right" headers="r/Conservative stub_1_1 Average Comment Controversiality">0.06</td>
+<td class="gt_row gt_right" headers="r/Conservative stub_1_1 Score">12,202</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Conservative color_2 color" style="background-color: #FFC0CB"></td>
+<td class="gt_row gt_right" headers="r/Conservative color_2 Number of Comments">4,734</td>
+<td class="gt_row gt_right" headers="r/Conservative color_2 Average Comment Controversiality">0.01</td>
+<td class="gt_row gt_right" headers="r/Conservative color_2 Score">501</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Conservative color_3 color" style="background-color: #FFC0CB"></td>
+<td class="gt_row gt_right" headers="r/Conservative color_3 Number of Comments">3,773</td>
+<td class="gt_row gt_right" headers="r/Conservative color_3 Average Comment Controversiality">0.03</td>
+<td class="gt_row gt_right" headers="r/Conservative color_3 Score">6,291</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Conservative color_4 color" style="background-color: #FFC0CB"></td>
+<td class="gt_row gt_right" headers="r/Conservative color_4 Number of Comments">3,620</td>
+<td class="gt_row gt_right" headers="r/Conservative color_4 Average Comment Controversiality">0.03</td>
+<td class="gt_row gt_right" headers="r/Conservative color_4 Score">0</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Conservative color_5 color" style="background-color: #FFC0CB"></td>
+<td class="gt_row gt_right" headers="r/Conservative color_5 Number of Comments">3,453</td>
+<td class="gt_row gt_right" headers="r/Conservative color_5 Average Comment Controversiality">0.09</td>
+<td class="gt_row gt_right" headers="r/Conservative color_5 Score">4,319</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td rowspan="5" class="gt_row gt_left gt_stub_row_group" headers="r/democrats stub_1_6 stub_1">r/democrats</td>
+<td class="gt_row gt_right" headers="r/democrats stub_1_6 color" style="background-color: #0000FF"></td>
+<td class="gt_row gt_right" headers="r/democrats stub_1_6 Number of Comments">4,574</td>
+<td class="gt_row gt_right" headers="r/democrats stub_1_6 Average Comment Controversiality">0.02</td>
+<td class="gt_row gt_right" headers="r/democrats stub_1_6 Score">5,942</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/democrats color_7 color" style="background-color: #0000FF"></td>
+<td class="gt_row gt_right" headers="r/democrats color_7 Number of Comments">1,444</td>
+<td class="gt_row gt_right" headers="r/democrats color_7 Average Comment Controversiality">0.03</td>
+<td class="gt_row gt_right" headers="r/democrats color_7 Score">1,214</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/democrats color_8 color" style="background-color: #0000FF"></td>
+<td class="gt_row gt_right" headers="r/democrats color_8 Number of Comments">1,324</td>
+<td class="gt_row gt_right" headers="r/democrats color_8 Average Comment Controversiality">0.05</td>
+<td class="gt_row gt_right" headers="r/democrats color_8 Score">1,806</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/democrats color_9 color" style="background-color: #0000FF"></td>
+<td class="gt_row gt_right" headers="r/democrats color_9 Number of Comments">853</td>
+<td class="gt_row gt_right" headers="r/democrats color_9 Average Comment Controversiality">0.05</td>
+<td class="gt_row gt_right" headers="r/democrats color_9 Score">632</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/democrats color_10 color" style="background-color: #0000FF"></td>
+<td class="gt_row gt_right" headers="r/democrats color_10 Number of Comments">829</td>
+<td class="gt_row gt_right" headers="r/democrats color_10 Average Comment Controversiality">0.01</td>
+<td class="gt_row gt_right" headers="r/democrats color_10 Score">3,086</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td rowspan="5" class="gt_row gt_left gt_stub_row_group" headers="r/Liberal stub_1_11 stub_1">r/Liberal</td>
+<td class="gt_row gt_right" headers="r/Liberal stub_1_11 color" style="background-color: #87CEEB"></td>
+<td class="gt_row gt_right" headers="r/Liberal stub_1_11 Number of Comments">330</td>
+<td class="gt_row gt_right" headers="r/Liberal stub_1_11 Average Comment Controversiality">0.06</td>
+<td class="gt_row gt_right" headers="r/Liberal stub_1_11 Score">83</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Liberal color_12 color" style="background-color: #87CEEB"></td>
+<td class="gt_row gt_right" headers="r/Liberal color_12 Number of Comments">314</td>
+<td class="gt_row gt_right" headers="r/Liberal color_12 Average Comment Controversiality">0.07</td>
+<td class="gt_row gt_right" headers="r/Liberal color_12 Score">981</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Liberal color_13 color" style="background-color: #87CEEB"></td>
+<td class="gt_row gt_right" headers="r/Liberal color_13 Number of Comments">313</td>
+<td class="gt_row gt_right" headers="r/Liberal color_13 Average Comment Controversiality">0.03</td>
+<td class="gt_row gt_right" headers="r/Liberal color_13 Score">323</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Liberal color_14 color" style="background-color: #87CEEB"></td>
+<td class="gt_row gt_right" headers="r/Liberal color_14 Number of Comments">310</td>
+<td class="gt_row gt_right" headers="r/Liberal color_14 Average Comment Controversiality">0.06</td>
+<td class="gt_row gt_right" headers="r/Liberal color_14 Score">330</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Liberal color_15 color" style="background-color: #87CEEB"></td>
+<td class="gt_row gt_right" headers="r/Liberal color_15 Number of Comments">284</td>
+<td class="gt_row gt_right" headers="r/Liberal color_15 Average Comment Controversiality">0.06</td>
+<td class="gt_row gt_right" headers="r/Liberal color_15 Score">155</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td rowspan="5" class="gt_row gt_left gt_stub_row_group" headers="r/Libertarian stub_1_16 stub_1">r/Libertarian</td>
+<td class="gt_row gt_right" headers="r/Libertarian stub_1_16 color" style="background-color: #FFD700"></td>
+<td class="gt_row gt_right" headers="r/Libertarian stub_1_16 Number of Comments">622</td>
+<td class="gt_row gt_right" headers="r/Libertarian stub_1_16 Average Comment Controversiality">0.02</td>
+<td class="gt_row gt_right" headers="r/Libertarian stub_1_16 Score">924</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Libertarian color_17 color" style="background-color: #FFD700"></td>
+<td class="gt_row gt_right" headers="r/Libertarian color_17 Number of Comments">526</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_17 Average Comment Controversiality">0.16</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_17 Score">115</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Libertarian color_18 color" style="background-color: #FFD700"></td>
+<td class="gt_row gt_right" headers="r/Libertarian color_18 Number of Comments">525</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_18 Average Comment Controversiality">0.23</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_18 Score">544</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Libertarian color_19 color" style="background-color: #FFD700"></td>
+<td class="gt_row gt_right" headers="r/Libertarian color_19 Number of Comments">473</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_19 Average Comment Controversiality">0.11</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_19 Score">1,280</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Libertarian color_20 color" style="background-color: #FFD700"></td>
+<td class="gt_row gt_right" headers="r/Libertarian color_20 Number of Comments">387</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_20 Average Comment Controversiality">0.00</td>
+<td class="gt_row gt_right" headers="r/Libertarian color_20 Score">1</td>
+</tr>
+<tr class="odd gt_row_group_first">
+<td rowspan="5" class="gt_row gt_left gt_stub_row_group" headers="r/politics stub_1_21 stub_1">r/politics</td>
+<td class="gt_row gt_right" headers="r/politics stub_1_21 color" style="background-color: #008000"></td>
+<td class="gt_row gt_right" headers="r/politics stub_1_21 Number of Comments">54,712</td>
+<td class="gt_row gt_right" headers="r/politics stub_1_21 Average Comment Controversiality">0.04</td>
+<td class="gt_row gt_right" headers="r/politics stub_1_21 Score">12,296</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/politics color_22 color" style="background-color: #008000"></td>
+<td class="gt_row gt_right" headers="r/politics color_22 Number of Comments">43,122</td>
+<td class="gt_row gt_right" headers="r/politics color_22 Average Comment Controversiality">0.01</td>
+<td class="gt_row gt_right" headers="r/politics color_22 Score">89,077</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/politics color_23 color" style="background-color: #008000"></td>
+<td class="gt_row gt_right" headers="r/politics color_23 Number of Comments">34,859</td>
+<td class="gt_row gt_right" headers="r/politics color_23 Average Comment Controversiality">0.06</td>
+<td class="gt_row gt_right" headers="r/politics color_23 Score">33,027</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/politics color_24 color" style="background-color: #008000"></td>
+<td class="gt_row gt_right" headers="r/politics color_24 Number of Comments">28,504</td>
+<td class="gt_row gt_right" headers="r/politics color_24 Average Comment Controversiality">0.05</td>
+<td class="gt_row gt_right" headers="r/politics color_24 Score">55,882</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/politics color_25 color" style="background-color: #008000"></td>
+<td class="gt_row gt_right" headers="r/politics color_25 Number of Comments">25,506</td>
+<td class="gt_row gt_right" headers="r/politics color_25 Average Comment Controversiality">0.03</td>
+<td class="gt_row gt_right" headers="r/politics color_25 Score">31,753</td>
+</tr>
+<tr class="even gt_row_group_first">
+<td rowspan="5" class="gt_row gt_left gt_stub_row_group" headers="r/Republican stub_1_26 stub_1">r/Republican</td>
+<td class="gt_row gt_right" headers="r/Republican stub_1_26 color" style="background-color: #FF0000"></td>
+<td class="gt_row gt_right" headers="r/Republican stub_1_26 Number of Comments">539</td>
+<td class="gt_row gt_right" headers="r/Republican stub_1_26 Average Comment Controversiality">0.10</td>
+<td class="gt_row gt_right" headers="r/Republican stub_1_26 Score">290</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Republican color_27 color" style="background-color: #FF0000"></td>
+<td class="gt_row gt_right" headers="r/Republican color_27 Number of Comments">399</td>
+<td class="gt_row gt_right" headers="r/Republican color_27 Average Comment Controversiality">0.00</td>
+<td class="gt_row gt_right" headers="r/Republican color_27 Score">497</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Republican color_28 color" style="background-color: #FF0000"></td>
+<td class="gt_row gt_right" headers="r/Republican color_28 Number of Comments">294</td>
+<td class="gt_row gt_right" headers="r/Republican color_28 Average Comment Controversiality">0.27</td>
+<td class="gt_row gt_right" headers="r/Republican color_28 Score">248</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_right" headers="r/Republican color_29 color" style="background-color: #FF0000"></td>
+<td class="gt_row gt_right" headers="r/Republican color_29 Number of Comments">217</td>
+<td class="gt_row gt_right" headers="r/Republican color_29 Average Comment Controversiality">0.02</td>
+<td class="gt_row gt_right" headers="r/Republican color_29 Score">285</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_right" headers="r/Republican color_30 color" style="background-color: #FF0000"></td>
+<td class="gt_row gt_right" headers="r/Republican color_30 Number of Comments">217</td>
+<td class="gt_row gt_right" headers="r/Republican color_30 Average Comment Controversiality">0.02</td>
+<td class="gt_row gt_right" headers="r/Republican color_30 Score">629</td>
+</tr>
+</tbody><tfoot class="gt_sourcenotes">
+<tr class="odd">
+<td colspan="5" class="gt_sourcenote">Source: Reddit data from June 2023 to July 2024</td>
+</tr>
+</tfoot>
+
+</table>
+
+</div>
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>When we compare average controversiality with submission score, we see that some subreddits tend towards higher scores with less controversiality, while other tend towards lower scores with more controversiality. In <a href="#fig-controversiality-score-faceted" class="quarto-xref">Figure&nbsp;7</a>, we see that r/democrats tends to have high scores with less controversiality, while r/Republicans tends to have lower scores with more controversiality. r/Conservative and r/Libertarian tend to have higher scores with more controversiality. Threads on r/politics tend to have small scores relative to the size of the subreddit, but the controversiality is relatively low.</p>
+<div id="fig-controversiality-score-faceted" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-controversiality-score-faceted-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/controversiality_score_faceted.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-controversiality-score-faceted-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Left leaning subreddits tend to have non-controversial threads, even as the score increases. Right leaning subreddits increase in controversiality as the score increases.
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The code used for this section is available <a href="https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/eda.qmd">here</a> and <a href="https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/more-eda.ipynb">here</a>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-top-authors" class="level2">
+<h2 class="anchored" data-anchor-id="sec-top-authors">Distribution of Political Contributions by Top Authors</h2>
+<p>Our third EDA goal was to look at the distribution of the candidate mentioning posts by the top authors. In <a href="#fig-percent-of-posts" class="quarto-xref">Figure&nbsp;8</a>, we plotted the number of posts from the top ten authors for each subreddit as a percentage of the total candidate mentioning posts found in that subreddit. One of the most interesting finds in <a href="#fig-percent-of-posts" class="quarto-xref">Figure&nbsp;8</a> is that r/Republican has two authors that make up over 50% of all posts in the subreddit. This is followed by the third highest posting author making up less than 4% of the remianing posts, and eaech following author making up a slightly smaller percent. r/democrats shares a similar overall distribution, with one author comprising around 7% of the posts followed by a steep drop to the number two author who made up roughly 2% of the posts. The same steady decrease can be observed in the subsequent authors. r/Conservative, r/Liberal, and r/Libertarian share similarly skewed distributions, with a rapid decrease in percentage from the top poster to each subsequent poster before evening out at around 1% by the tenth author. r/politics bucks the trend slightly as the highest posters make up a smaller percentage of the total posts, with the top poster making up around 1% of the total posts. This is not suprising given that r/politics is by far the largest subreddit in our analysis.</p>
+<div id="fig-percent-of-posts" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-percent-of-posts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="plots/percent_of_posts.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-percent-of-posts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Each subreddit has regular posters that make up a large percentage of the total posts mentioning Biden or Trump.
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-simple callout-note">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>The code used for this section is available <a href="https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/EDA.ipynb">here</a>.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Introduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./nlp.html" class="pagination-link" aria-label="NLP">
+        <span class="nav-page-text">NLP</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Content <i class="fa-brands fa-creative-commons" aria-label="creative-commons"></i> 2024 by Marion Bauman, Brian Kwon, &amp; Aaron Schwall <br> Created by Project Group 1 for DSAN 6000 at Georgetown University <br> All content licensed under a <i class="fa-brands fa-creative-commons" aria-label="creative-commons"></i> <i class="fa-brands fa-creative-commons-by" aria-label="creative-commons-by"></i> <i class="fa-brands fa-creative-commons-nc" aria-label="creative-commons-nc"></i> <a href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Made with <i class="fa-brands fa-python" aria-label="python"></i>, <i class="fa-brands fa-r-project" aria-label="r-project"></i>, and <a href="https://quarto.org/">Quarto</a><br> <a href="https://github.com/briansoonwookwon/DSAN_6000_Project.git">View the source at <i class="fa-brands fa-github" aria-label="github"></i> GitHub</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

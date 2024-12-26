@@ -1,0 +1,101 @@
+---
+title: Feedback Discussion
+---
+:::: {.columns}
+
+:::{.column width="60%"}
+
+Throughout our work on this project, we received feedback from our instructors. Professor Marck was especially helpful in providing as with feedback as our faculty mentor for this work. The feedback we received was invaluable in helping us improve our project and ensure that we were constructing the most helpful analyses for our project aims.
+
+:::
+
+::: {.column width="5%"}
+<!-- empty column to create gap -->
+:::
+
+:::{.column width="35%"}
+
+![Image courtesy of Flaticon](imgs/continuous-improvement.png){width=40%}
+
+:::
+
+::::
+
+:::: {.columns}
+
+:::{.column width="35%"}
+
+![Image courtesy of Flaticon](imgs/feedback-loop.png){width=40%}
+
+:::
+
+::: {.column width="5%"}
+<!-- empty column to create gap -->
+:::
+
+:::{.column width="60%"}
+
+We also regularly discussed our work as a team and provided feedback to each other to ensure that all our work moved towards the same goals. At each stage of our work, we have utilized this feedback to iterate on our project and improve our work. Below, we have outlined the feedback we received and how we implemented it.
+
+:::
+
+::::
+
+## Project plans
+### Feedback
+
+1. Explore the entirety of reddit outside of those subreddits as well for anything relevant.
+2. Incorporate recent data as your external data
+
+### Implementation
+
+1. We expanded our initial list of four subreddits to include more subreddits that were relevant to our project aims. While our analytical set only had six subreddits, our initial EDA and discovery used nine subreddits which we then narrowed down based on relevance and content size.
+2. We incorporated recent data by pulling data from Google trends and incorporating it into our analysis. This analysis is used in the NLP section of our project.
+
+## EDA
+
+### Feedback
+
+1. Show distributions rather than just central tendencies in plots
+2. Normalize data to compare across subreddits
+3. Use explanatory titles and labels
+4. Analyze threads, not just comments or submissions
+
+### Implementation
+
+1. We updated our plots to use fewer bar charts and instead incorporated more density plots, line charts, and histograms to show distributions. When measuring central tendencies, we included averages and medians to provide a more comprehensive view of the data.
+2. We normalized score when creating density plots to allow for clear comparison across subreddits. This normalization was especially helpful for understanding our largest subreddit, r/politics, in context.
+3. We updated our titles and labels significantly for more clarity. We also added subtitles to all plots and tables for additional context.
+4. We created an analysis of threads in the Comment Controversiality section of EDA. This analysis allowed us to understand trends at the thread level in different subreddits.
+
+## NLP
+
+### Feedback
+
+1. Use a pre-trained model from Spark to create new features
+2. Consider using a Name Entity Recognition (NER) model to identify entities in the larger body of subreddit text
+
+### Implementation
+
+1. We implemented a pre-trained model from Spark to do sentiment analysis on our data. This analysis is used in the NLP section of our project.
+2. We considered an NER model and even experimented with running it. However, we ultimately decided that the insights from the model were not helping us move towards our project aims. In future work, we may revisit this model to see if it can provide additional insights, but NER did not seem to be giving us helpful information for selecting which data to use in our analysis. We did decide to add a topic modeling section to our NLP analysis using Latent Dirichlet Allocation (LDA) to identify topics in our data.
+
+## ML
+
+### Feedback
+
+1. Consider the usefulness of subreddit prediction. What is the use case for this?
+
+### Implementation
+
+1. To address this, we first added more context to our discussion of the subreddit prediction in order to explain how it might be a useful analysis. The analysis was particularly useful in giving us insight into the separability of conversations happening in different subreddits. Second, we also added a new machine learning analysis to our project that predicts the number of comments for a post. This analysis is more directly useful for understanding the engagement a post is likely to receive and could be used by a social media manager for a political campaign or advocacy group to understand how to best engage with their audience.
+
+## Website
+
+### Feedback
+
+1. None
+
+### Implementation
+
+1. We did not receive any feedback on our website. However, we have worked hard to ensure that our website is clear, easy to navigate, visually appealing, and informative.

@@ -1,0 +1,58 @@
+project:
+  type: website
+  output-dir: ../docs
+
+website:
+  title: "Patterns in U.S. Political Discussions"
+  page-navigation: true
+  back-to-top-navigation: true
+
+  navbar:
+    left:
+      - text: Home
+        href: ../../index.html
+      - text: Code and Data
+        href: https://github.com/briansoonwookwon/DSAN_6000_Project.git
+      - text: Authors
+        href: author.qmd           
+      - text: References
+        href: references.qmd      
+    right:
+      - href: "{{< var course.github >}}"
+        icon: github
+
+  sidebar:
+    style: "docked"
+    search: true
+    collapse-level: 2
+    align: left
+    contents:
+      - text: Introduction
+        href: index.qmd
+      - text: EDA
+        href: eda.qmd
+      - text: NLP
+        href: nlp.qmd
+      - text: ML
+        href: ml.qmd
+      - text: Conclusion
+        href: summary.qmd
+      - text: Feedback Discussion
+        href: feedback.qmd
+
+  page-footer:
+    left: |
+      Content {{< fa brands creative-commons >}} {{< var course.copyright_year >}} by {{< var author.name >}} <br>
+      Created by {{< var author.project_group >}} for DSAN 6000 at Georgetown University <br>
+      All content licensed under a {{< fa brands creative-commons >}}
+      {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}
+      [Creative Commons Attribution-NonCommercial 4.0 International license (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/)
+    right: |
+      Made with {{< fa brands python >}}, {{< fa brands r-project >}}, and [Quarto](https://quarto.org/)<br>
+      [View the source at {{< fa brands github >}} GitHub]({{< var course.github >}})
+      
+format:
+  html:
+    page-layout: full
+    theme: [minty, theme-light.scss]
+    toc: true

@@ -1,0 +1,211 @@
+# Load in the Data
+
+```{r}
+library(tidyverse)
+library(arrow)
+
+comments <- read_parquet('data/csv/comments_final.parquet')
+submissions <- read_parquet('data/csv/submissions_final.parquet')
+```
+
+# Set up Color and Formatting
+
+```{r}
+color_map = list(
+    "Conservative" = "#ffc0cb",
+    "Republican" = "#ff0000",
+    "democrats" = "#0000ff",
+    "Liberal" = "#87ceeb",
+    "Libertarian" = "#ffd700",
+    "politics" = "#008000"
+)
+
+scale_fill_proj <- function(...) {
+    scale_fill_manual(values = c("#ffc0cb", "#ff0000", "#0000ff", "#87ceeb", "#ffd700", "#008000"))
+}
+```
+
+# Create Controversiality Plots
+```{r}
+comments |>
+    group_by(subreddit, controversiality) |>
+    summarise(count = n()) |>
+    ungroup() |> group_by(subreddit) |>
+    reframe(perc = count/sum(count), count = count, controversiality = controversiality) |>
+    mutate(color = color_map[subreddit]) |>
+    filter(controversiality == 1) |>
+    mutate(subreddit = paste0("r/", subreddit)) |>
+    ggplot(aes(x = subreddit, y = perc, fill = subreddit)) +
+    ggplot2::geom_col(width = 0.5) +
+    ggplot2::theme_bw(
+        base_size = 22
+    ) +
+    ggplot2::scale_y_continuous(
+        breaks = c(0, 0.02, 0.04, 0.06, 0.08, 0.1),
+        labels = c("0%", "2%", "4%", "6%", "8%", "10%"),
+        expand = c(0, 0),
+        limits = c(0, 0.11)
+    ) +
+    geom_text(aes(label = scales::percent(perc)), vjust = -0.5, size = 6) +
+    labs(x = "Subreddit",
+    y = "Controversial Comments (%)",
+    title = str_wrap("Percent of Comments that are Controversial by Subreddit from June 2023 to July 2024", 70),
+    subtitle = "r/Republican has the highest percentage of controversial comments",
+    fill = "Subreddit") +
+    scale_fill_manual(values = c("#ffc0cb", "#0000ff", "#87ceeb", "#ffd700", "#008000", "#ff0000")) +
+    guides(fill = FALSE)
+
+ggsave("website-source/plots/controversiality-by-subreddit.png", width = 14, height = 8)
+```
+
+```{r}
+df <- comments |>
+    select(subreddit, controversiality, link_id) |>
+    mutate(link_id = str_split_fixed(link_id, "_", 2)[,2]) |>
+    inner_join(submissions |> select(id, num_comments), by = c("link_id" = "id")) |>
+    group_by(link_id) |>
+    summarise(
+        avg_controversiality = mean(controversiality),
+        num_comments = first(num_comments)
+    )
+
+df |>
+    ggplot(aes(x = num_comments, y = avg_controversiality)) +
+    geom_bin2d() +
+    ggplot2::theme_bw(
+        base_size = 22
+    ) +
+    labs(
+        title = "Number of Comments per Thread vs Average Comment Controversiality",
+        subtitle = str_wrap("Threads (a submission and its comments) with more comments tend to be less controversial", 80),
+        x = "Number of Comments in Thread",
+        y = "Average Controversiality",
+        fill = "Number of\nThreads"
+    ) +
+    # use blue color
+    scale_fill_gradient(
+        low = "grey90",
+        high = "#0000ff",
+        trans = "log10",
+        labels = scales::comma,
+        breaks = c(1, 10, 100, 1000, 10000, 100000, 1000000)
+    ) +
+    # log scale
+    scale_x_continuous(
+        trans = "pseudo_log",
+        labels = scales::comma,
+        breaks = c(1, 10, 100, 1000, 10000, 100000, 1000000)
+    )
+
+ggsave("website-source/plots/controversiality-vs-comment-count.png", width = 14, height = 8)
+```
+
+```{r}
+comments |>
+    select(subreddit, controversiality, link_id) |>
+    mutate(link_id = str_split_fixed(link_id, "_", 2)[,2]) |>
+    inner_join(submissions |> select(id, num_comments, score), by = c("link_id" = "id")) |>
+    group_by(link_id) |>
+    summarise(
+        avg_controversiality = mean(controversiality),
+        num_comments = first(num_comments),
+        subreddit = first(subreddit),
+        avg_score = first(score)
+    ) |>
+    # filter(subreddit == "Republican") |>
+    mutate(subreddit = paste0("r/", subreddit)) |>
+    ggplot(aes(x = num_comments, y = avg_controversiality)) +
+    geom_bin2d() +
+    ggplot2::theme_bw(
+        base_size = 20,
+        # make facet backgorund white
+    ) +
+    labs(
+        title = str_wrap("Number of Comments per Thread vs Average Comment Controversiality by Subreddit", 70),
+        subtitle = str_wrap("Some subreddits have few controversial threads, while others have many", 80),
+        x = "Number of Comments", 
+        y = "Controversiality",
+        fill = "Number of\nThreads"
+    ) +
+    # use blue color
+    scale_fill_gradient(
+        low = "grey90",
+        high = "#0000ff",
+        trans = "log10",
+        labels = scales::comma,
+    ) +
+    # log scale
+    scale_x_continuous(
+        trans = "pseudo_log",
+        labels = scales::comma,
+        breaks = c(1, 10, 100, 1000, 10000, 100000, 1000000)
+    ) +
+    facet_wrap(~subreddit, scales = "free_x") +
+    theme(
+        strip.background = element_rect(fill = "white")
+    )
+
+ggsave("website-source/plots/controversiality-vs-comment-count-by-subreddit.png", width = 14, height = 8)
+```
+
+# Create Tables for EDA
+
+```{r}
+submissions |>
+    group_by(subreddit) |>
+    summarise(
+        avg_num_comments = mean(num_comments),
+        avg_score = mean(score),
+        num_submissions = n(),
+        median_score = median(score),
+        median_num_comments = median(num_comments)
+    ) |>
+    mutate(
+        score_comments_ratio = avg_score/avg_num_comments,
+        comment_rate = avg_num_comments/num_submissions,
+        score_rate = avg_score/num_submissions,
+        comment_rate_med = median_num_comments/num_submissions,
+        score_rate_med = median_score/num_submissions
+    ) |>
+    mutate(
+        participation_rate = (comment_rate + score_rate) / 2,
+        participation_rate_med = (comment_rate_med + score_rate_med) / 2
+    ) |>
+    write_csv("data/tables/subreddit-summary.csv")
+```
+
+```{r}
+comments |>
+    group_by(subreddit) |>
+    summarise(
+        avg_score = mean(score),
+        avg_controversiality = mean(controversiality),
+        avg_word_count = mean(str_count(body, "\\S+")),
+        med_word_count = median(str_count(body, "\\S+"))
+    ) |>
+    write_csv("data/tables/subreddit-comments-summary.csv")
+```
+
+```{r}
+comments |>
+    select(subreddit, controversiality, link_id) |>
+    mutate(link_id = str_split_fixed(link_id, "_", 2)[,2]) |>
+    inner_join(
+        submissions |>
+            select(id, num_comments, score),
+        by = c("link_id" = "id")
+        ) |>
+    group_by(link_id) |>
+    reframe(
+        subreddit = first(subreddit),
+        num_comments = first(num_comments),
+        avg_controversiality = mean(controversiality),
+        score = first(score)
+    ) |>
+    arrange(desc(num_comments)) |>
+    ungroup() |>
+    group_by(subreddit) |>
+    slice_head(n = 5) |>
+    select(subreddit, num_comments, avg_controversiality, score) |>
+    write_csv("data/tables/top-5-threads-by-subreddit.csv")
+```

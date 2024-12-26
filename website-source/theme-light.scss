@@ -1,0 +1,57 @@
+/*-- scss:defaults --*/
+// Base document colors
+$link-color: #FF343E;
+$code-color: #FF343E;
+$primary: #083A90;
+$body-bg: #FFFFFF;
+
+// Text colors
+$body-color: #050E1E;
+
+// Code blocks
+$code-block-bg: #fffdf8;
+$code-annotation-highlight-bg: #FEFEFE;
+$code-bg: #fffdf8;
+
+// Navbar
+$navbar-hl: #FF343E;
+$navbar-fg: #FEF9EC;
+
+// Footer
+$footer-fg: #0c2147;
+
+// Add color for h1, h2, h3, h4, h5, h6
+/*-- scss:rules --*/
+h1 {
+    color: #061022;
+}
+
+h2 {
+    color: #061226;
+}
+
+h3 {
+    color: #08162e;
+}
+
+h4 {
+    color: #091936;
+}
+
+h5 {
+    color: #0a1d3f;
+}
+
+h6 {
+    color: #0c2147;
+}
+
+figcaption {
+    color: #0c2147;
+    // make text size smaller
+    font-size: 0.8em;
+}
+
+.sidebar-navigation .sidebar-item {
+    font-size: 1.2rem;
+}

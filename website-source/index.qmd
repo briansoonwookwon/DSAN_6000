@@ -1,0 +1,212 @@
+---
+title: Introduction
+execute:
+    echo: false
+    warning: false
+    message: false
+---
+
+:::: {.columns}
+
+:::{.column width="60%"}
+
+Politics and governmental rule have always been a source of discussion and debate in societies throughout history. Today, debate and conversation plays a key part in democracy. In the United States, voters are encouraged to engage in conversations with like-minded peers and dissidents to understand others' opinions, make informed decisions, and allow all voices to be heard. In the age of the internet, there are more opportunities than ever to engage in discussions regarding politics. Reddit is a popular social media platform full of communities engaging in regular political discussions. Users participate in topical forums called "subreddits" to voice their opinions, share information, and engage with others. Political discussions online point to real-world events and their repercussions in the thoughts and opinions of everyday Americans.
+
+:::
+
+::: {.column width="5%"}
+<!-- empty column to create gap -->
+:::
+
+:::{.column width="35%"}
+
+![Image courtesy of Flaticon](imgs/rep-dem-flaticon.png)
+
+:::
+
+::::
+
+# Project Overview
+
+In this project, we aim to use Reddit data from June 2023 to July 2024 to understand trends and changes in opinion in U.S. political discussions. We will analyze data from political subreddits to understand how different subreddits engage in political discussion and how political discussions compare with real-world political sentiments such as presidential job approval. We will identify which political subreddits tend to have more contraversial discussions, how often posts lean towards extremism, and how distinctive conversations are among different political leanings. We will also analyze whether subreddits tend toward positive or negative conversations. As part of our analysis, we will understand how these trends change over the course of the year and how these trends align with or are impacted by real-world political events.
+
+In this project, our analysis will take a variety of forms to make sense of the vast amount of Reddit data. We will begin with Exploratory Data Analysis (EDA) to understand the data and uncover patterns. Next, we will move to Natural Language Processing (NLP) where we will employ specific techniques to analyze textual data and gather advance insights. After that, we will utilize Maching Learning (ML) to make predictive models based on Reddit posts to understand patterns in subreddits and gain new insights. Finally, we will summarize our findings to highlights the key takeaways from our analysis of political discussions.
+
+For our political dataset, we will be using the following six subreddits outline in @tbl-intro.
+
+```{r}
+#| label: tbl-intro
+#| tbl-cap: Overview of subreddits used for analysis throughout the project
+
+library(gt)
+
+df <- readr::read_csv("tables/intro.csv")
+df |>
+    dplyr::mutate(color = "") |>
+    dplyr::relocate(color, .after = Subreddit) |>
+    gt() |>
+    tab_header(
+        title = "Subreddits Used in Analysis",
+        subtitle = "Overview of political subreddits used as the analytical dataset for the project"
+    ) |>
+    fmt_number(
+        columns = c(`Number of Posts`, `Number of Comments`),
+        decimals = 0,
+        use_seps = TRUE
+    ) |>
+    tab_style(
+        style = cell_text(weight = "bold", align= "left"),
+        locations = cells_title()
+    ) |>
+    tab_style(
+        cell_fill('#ffc0cb'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Conservative"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#ff0000'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Republican"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#008000'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/politics"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#0000ff'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/democrats"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#87ceeb'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Liberal"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#ffd700'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Libertarian"
+        )
+    ) |>
+    cols_label(
+        color = ""
+    ) |>
+    tab_style(
+        style = list(
+            cell_borders(sides = c("r"), color = "gray50", weight = px(2))
+        ),
+        locations = cells_body(columns = c(Subreddit, color)
+        )
+    ) |>
+    tab_style(
+        cell_text(align = "right"),
+        locations = cells_body(columns = `Number of Members`)
+    ) |>
+    tab_footnote(
+        footnote = "Data from June 2023 to July 2024",
+        locations = cells_column_labels(columns = c(`Number of Posts`, `Number of Comments`))
+    ) |>
+    tab_footnote(
+        footnote = "Data from November 14, 2024",
+        locations = cells_column_labels(columns = `Number of Members`)
+    ) |>
+    tab_options(
+        footnotes.marks = "standard"
+    )
+```
+
+Using these subreddits, we will conduct a thorough analysis of political discussions on Reddit. In order to further distinguish which data is most relevant to our research, we filtered all data from the listed subreddits to include only posts that mention "Trump" or "Biden" in the title or body of the post. This will allow us to focus on national U.S. political discussions related to the two most recent U.S. Presidents. For details on our specific business goals, see the following section.
+
+## Detailed Project Business Goals
+
+### EDA
+
+#### Idea 1: [Subreddit Political Engagement](eda.qmd#sec-subreddit-engagement)
+
+**Business goal**: Identify which subreddits frequently discuss the President and U.S. politics to understand the spread of political discourse across Reddit.
+
+**Technical proposal**: Use PySpark to filter and aggregate posts mentioning the President, U.S. politics, and elections, grouping by subreddit. Analyze and visualize the distribution of posts across subreddits to see whether discussions are concentrated in subreddits dedicated to politics (such as r/politics) or are prevalent in general-interest subreddits. Normalize the data to account for differences in subreddit sizes.
+
+#### Idea 2: [Controversiality vs. Comment Count](eda.qmd#sec-controversiality)
+
+**Business goal**: Analyze the relationship between the controversiality of posts and comment count to understand user engagement during politically charged discussions.
+
+**Technical proposal**: Use the `controversiality` metric encoded in the data to identify controversial posts. Compare the average comment count and score of controversial posts to non-controversial posts. Compare the distribution of controversial posts across different subreddits to identify which subreddits tend to have more controversial discussions.
+
+#### Idea 3: [Distribution of Political Contributions by Top Authors](eda.qmd#sec-top-authors)
+
+**Business goal**: Examine the distribution of political contributions mentioning Biden, Harris, or Trump in each different subreddit by the top authors. Are there a few people making up the majority of the posts? 
+
+**Technical proposal**: We will detect the political contributions by finding the Keywords Trump, Biden, and Harris. We then determine the top posters of this political content for each subreddit, and calculate the percent of the total political posts that are authored by these contributors. 
+
+### NLP
+
+#### Idea 4: [Comparison Between Reddit Sentiment and Presidential Job Approval Rates](nlp.qmd#comparison)
+
+**Business Goal**:
+Analyze how sentiment trends on political subreddits focused on Trump and Biden correlate with broader public opinion as measured by Presidential Job Approval Rates. This analysis aims to understand whether shifts in online sentiment, as expressed in subreddit discussions, reflect changes in real-world political perceptions or highlight discrepancies between online and offline public opinion over time.
+
+**Technical Proposal**:
+Apply sentiment analysis to submissions from the selected political subreddits. Aggregate positive sentiments for each month on Trump and Biden related submissions. Compare these sentiment trends with monthly Presidential Job Approval Rates to see how subreddits sentiments align with the public political views. Conduct comparative statistical test to see if there are any correlations. 
+
+#### Idea 5: [Lexical Trends Analysis of Key Terms in Trump and Biden Related Reddit Submissions](nlp.qmd##lexical-trends)
+
+**Business Goal**:
+Explore the textual content of posts in political subreddits to identify commonly used words and topic-specific terms in discussions centered on Trump and Biden. This analysis seeks to reveal the distinctive vocabulary used across communities and highlight the themes and issues driving political discourse in different subreddits.
+
+**Technical Proposal**:
+Implement Count Vectorization to calculate the raw frequency of words across subreddit submissions, providing insights into the most commonly used terms. Additionally, use Latent Dirichlet Allocation (LDA) to uncover underlying topic structures and associate key terms with thematic discussions. By combining these approaches, identify how different subreddits approach Trump- or Biden-related discussions and which terms are unique or prominent in these conversations. Compare findings across subreddits to highlight contrasts in discourse.
+
+#### Idea 6: [Impact of Dominant Terms on Shaping Political Discussions on Reddit](nlp.qmd#impact)
+
+**Business Goal**:
+Identify the most impactful terms in shaping political discussions on Reddit by quantifying their importance across subreddits. This analysis seeks to uncover how specific terms drive or influence political conversations in various communities.
+
+**Technical Proposal**:
+Apply Term Frequency-Inverse Document Frequency (TF-IDF) analysis to identify the most significant terms from a subset of key words derived from Count Vectorizer and LDA outputs. This technique will calculate the relative importance of words within specific subreddits, factoring in their prevalence across the entire Reddit dataset. Combine TF-IDF results with sentiment analysis and topic modeling to contextualize how these terms contribute to shaping subreddit-specific political narratives.
+
+#### Idea 7: [Identifying the Most Extreme Subreddits in Political Discourse](nlp.qmd#extreme)
+
+**Business Goal**:
+Determine which political subreddits foster the most extreme or distinct discussions by analyzing sentiment, frequently used terms, and dominant topics. The goal is to identify the communities that generate the most distinct and possibly divisive political narratives.
+
+**Technical Proposal**:
+Use the results from sentiment analysis, Count Vectorization, and LDA to identify various trends in sentiments, frequently used words, and topic-specific terms within the submissions. Compare these results across subreddits by quantifying differences in sentiment distributions, lexical diversity, and topic extremity. 
+
+### ML
+
+#### Idea 8: [Subreddit Prediction from Submission Text](ml.qmd#subreddit-prediction)
+
+**Business goal**: Predict the most likely subreddit for a given post based on its text content to improve content recommendations and classification.
+
+**Technical proposal**: Train a multi-class classifier on text data with labels as subreddit names. Use embeddings or TF-IDF vectors as features. Train across political subreddits and evaluate the model's performance on unseen data. Analyze which words or phrases contribute most to subreddit prediction, and evaluate model's performance with a confusion matrix and classification metrics.
+
+#### Idea 9: [Predicting Popularity of Posts](ml.qmd#popularity-prediction)
+
+**Business goal**: Identify which factors contribute to a post's popularity (score) to better understand what drives user engagement in political discussions.
+
+**Technical proposal**: Use post `score` as the target variable. Use post text, post title, comment count, length, and subreddit name as features. Make sure to normalize all values for subreddit size, since posts in larger subreddits will automatically have higher scores. Train a regression model to predict `score`, a good proxy for popularity, using data from political subreddits. Evaluate the model's performance based on $RMSE$ and $R^2$, and analyze feature importance (if possible) to understand which factors most influence post popularity.
+
+#### Idea 10: [Predicting Political Leaning of Comments and Posts](ml.qmd#political-leanings)
+
+**Business goal**: Automatically classify comments and posts as left-leaning, right-leaning, or neutral to understand the distribution of political perspectives within and across subreddits.
+
+**Technical proposal**: Utilize as pre-trained model to predict the political leanings of comments and posts. Identify a pre-trained model that is effective at classifying political text based on its political leaning. Apply the model to comments and posts in political subreddits, then analyze the distribution of political leanings across subreddits. Compare the distribution of political leanings in different subreddits with the stated political affiliation of the subreddit to assess alignment.
+
+#### Idea 11: [Predicting Number of Comments](ml.qmd#num-comments)
+
+**Business goal**: Develop a model to predict the if a post will have a small amount, a moderate amount or many comments. 
+
+**Technical proposal**: Create a categorical variable for the number of comments linked to a submission based on percentile to classify if the post has a large, moderate, or small number of comments. Train a machine learning model to predict the number of comments, apply the model to the submissions in the dataset, and analyze the results. Calculate the most important features in predicting the comment number. Compare this across subreddits and other features.

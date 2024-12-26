@@ -1,0 +1,15 @@
+---
+title: Reference
+---
+
+**1. Presidential Job Approval Rate**
+
+[https://www.presidency.ucsb.edu/statistics/data/joseph-r-biden-public-approval](https://www.presidency.ucsb.edu/statistics/data/joseph-r-biden-public-approval)
+
+**2. SerpAPI (Google Trends)**
+
+[https://serpapi.com/google-trends-api](https://serpapi.com/google-trends-api)
+
+::: {.callout-note appearance="simple"}
+The code used for SerpAPI is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/google_trends.py).
+::: 

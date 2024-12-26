@@ -1,0 +1,453 @@
+---
+title: Exploratory Data Analysis
+execute: 
+  echo: false
+  message: false
+  warning: false
+---
+
+```{r}
+library(tidyverse)
+library(gt)
+```
+
+# Executive Summary
+
+Through the exploratory data analysis (EDA) process, we aimed to understand the political engagement on Reddit by analyzing the comments and submissions from six major political subreddits: r/Conservative, r/democrats, r/Liberal, r/Libertarian, r/politics, and r/Republican. We focused on understanding the frequency of conversations about Trump and Biden, the controversiality of threads across the subreddits, and the distribution of political contributions by top authors. 
+
+Our analysis revealed that political subreddits tend to discuss Trump more frequently than Biden, though this trend changes over time based on the subreddit and current events. We found that discussions on r/Republican then to be the most contraversial, while r/democrats tend to have the least controversial threads. There is not a clear link between the number of comments on a thread, the score of the thread, and the controversiality of the comments; however, this could be influenced by the fact that score is the sum of upvotes and downvotes and obfuscates the true popularity of a thread. Additionally, we found that the top posters in each subreddit tend to make up a large percentage of the total posts.
+
+Our analysis indicates that the political climate on Reddit is complex and multifaceted, with different subreddits having different levels of engagement and controversiality. Based on this research, we continue our analysis using natural language processing (NLP) and machine learning (ML) techniques to further understand the political climate on Reddit.
+
+# Analytical Report
+
+## Subreddit Political Engagement {#sec-subreddit-engagement}
+
+Our first goal when performing exploratory data analysis was to identify the subreddits that have a large number of political posts that mention Biden or Trump. To do this, we examined the comments from many different politically oriented subreddits. We found that the subreddit r/Politics had by far the most mentions of the two presidents. However, given that the main purpose of this project is to compare and contrast the political engagement and climate of the major political parties, we decided to focus on six major subreddit, as seen in @tbl-subreddit-summary. These subreddits are r/Liberal, r/Conservative, r/Republican, r/Libertarian, r/democrats, and r/politics. We filtered the submissions to select only those submissions that mentioned Biden or Trump in order to focus on broad political trends. To analyze the submissions, we looked at the average score and the average number of comments per subreddit.
+
+```{r}
+#| label: tbl-subreddit-summary
+#| tbl-cap: Median scores reveal that while all subreddits have some popular posts, most submissions have low scores and few comments.
+df1 <- read_csv("tables/subreddit-summary.csv")
+df1 |>
+    select(
+        subreddit,
+        avg_num_comments,
+        median_num_comments,
+        avg_score,
+        median_score,
+        num_submissions
+    ) |>
+    mutate(
+        subreddit = paste0('r/', subreddit)
+    ) |>
+    mutate(subreddit = factor(subreddit, levels = sort(unique(subreddit))) ) |>
+    arrange(subreddit) |>
+    mutate(color = "") |>
+    dplyr::relocate(color, .after = subreddit) |>
+    rename(
+        "Subreddit" = subreddit,
+        "Average Number of Comments" = avg_num_comments,
+        "Median Number of Comments" = median_num_comments,
+        "Average Score" = avg_score,
+        "Median Score" = median_score,
+        "Number of Submissions" = num_submissions
+    ) |>
+    gt(
+        rowname_col = "Subreddit"
+    ) |>
+    tab_header(
+        title = "Political Subreddit Submissions Mentioning Biden or Trump",
+        subtitle = "Summary statistics on the number of comments and score by subreddit per submission"
+    ) |>
+    tab_spanner(
+        label = "Number of Comments",
+        columns = c("Average Number of Comments", "Median Number of Comments")
+    ) |>
+    cols_label(
+        `Average Number of Comments` = "Average",
+        `Median Number of Comments` = "Median",
+    ) |>
+    tab_spanner(
+        label = "Score",
+        columns = c("Average Score", "Median Score")
+    ) |>
+    cols_label(
+        `Average Score` = "Average",
+        `Median Score` = "Median",
+    ) |>
+    fmt_number(
+        columns = c(`Average Number of Comments`, `Average Score`),
+        decimals = 1
+    ) |>
+    fmt_number(
+        columns = c(`Median Number of Comments`, `Median Score`, `Number of Submissions`),
+        decimals = 0,
+        use_seps = TRUE
+    ) |>
+    tab_source_note(
+        source_note = "Source: Reddit data from June 2023 to July 2024"
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(weight = "bold")
+        ),
+        locations = cells_title()
+    ) |>
+    tab_style(
+        style = list(
+            cell_borders(sides = c("l"), color = "gray50", weight = px(2))
+        ),
+        locations = cells_body(columns = c(
+            `Average Number of Comments`,
+            `Average Score`
+            )
+        )
+    ) |>
+    tab_style(
+        style = list(
+            cell_borders(sides = c("r"), color = "gray50", weight = px(2))
+        ),
+        locations = cells_body(columns = c(
+            `Median Number of Comments`,
+            `Median Score`
+            )
+        )
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(
+                v_align = "top"
+            )
+        ),
+        locations = cells_column_labels()
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(
+                v_align = "top",
+                align = "center"
+            )
+        ),
+        locations = cells_column_spanners()
+    ) |>
+    tab_style(
+        cell_text(align = "left"),
+        locations = cells_stub()
+    ) |>
+    tab_style(
+        cell_fill('#ffc0cb'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Conservative"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#ff0000'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Republican"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#008000'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/politics"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#0000ff'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/democrats"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#87ceeb'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Liberal"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#ffd700'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Libertarian"
+        )
+    ) |>
+    cols_label(
+        color = ""
+    )
+```
+
+@Fig-avg-comments-bar shows the average number of comments received by each post in the different subreddits. The number of comments that the average post receives can give us a comparative measure of overall engagement across the subreddits when it comes to the presidential election. We can see from the plot that r/politics has the highest number of comments per submission, and r/Republican has the lowest, with less than 7. r/democrats has just under 15 comments per submission, while r/Conservative and r/Libertarian have slightly ore at ~17-18 comments per submission.
+
+![r/politics has the highest average number of comments per submission since it is the largest subreddit in our analysis.](plots/avg_comments.png){#fig-avg-comments-bar}
+
+Next, we looked at the frequency of mentions of Biden and Trump between the subreddits. @Fig-candidate-mentions-bar shows whether the users in each subreddit are more concerned with their parties candidate or the opposing parties candidate. This plot also gives us an idea of the number of total posts mentioning the candidates in each subreddit. We can see that the largest subreddit in terms of number of candidate mentioning posts was by far r/Conservative, which had well over double the posts of the next subreddit. r/democrats and r/Republicans had a similar number of candidate mentioning posts, while r/Libertarian expectedly had a small fraction of the number of posts achieved by the other subreddits. In terms of specific candidate mentions, only r/democrats had a significant difference, with Trump being mentioned more often than Biden. Both r/Libertarian and r/Conservative had slightly more trump mentions, while r/Republican mentioned Biden slighlty more. 
+
+![Most political subreddits mention Trump slightly more than Biden.](plots/candidate_mentions.png){#fig-candidate-mentions-bar}
+
+The next aspect of the data we wanted to look into was the average score per subreddit per candidate over time. The score of a reddit submission is the total number of thumbs up votes it receives minus the total number of thumbs down votes it receives. @Fig-score-per-subreddit shows plots for each subreddit, with the red line indicating mentions of Trump and the blue line indicating mentions of Biden. These are the weekly averages. We can see that across all subreddits there is an issue with the data around September 2023, when the scores are all 0. Across most of the subreddits neither of the candidates has a decisively higher score, with many subreddits seeing a large variation in the weekly averages of both candidates. The one exception to this is r/politics, where the average score is consistently higher for posts mentioning Trump, an interesting trend for a non-partisan subreddit.
+
+![Posts on r/politics tend to have higher scores if they mention Trump.](plots/score_per_subreddit.png){#fig-score-per-subreddit}
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/EDA.ipynb).
+::: 
+
+## Controversiality vs. Comment Count {#sec-controversiality}
+
+Our second EDA goal was to understand the relationship between controversiality and comment count in different posts. First, we wanted to understand if certain subreddits were prone to more controversial posts than others. We started by examining the comments dataset, as summarized in @tbl-subreddit-comments-summary.
+
+```{r}
+#| label: tbl-subreddit-comments-summary
+#| tbl-cap: There is not a clear pattern between the average controversiality, comment count, and the submission score, with the extreme values falling in across different subreddits.
+df2 <- read_csv("tables/subreddit-comments-summary.csv")
+df2 |>
+    mutate(
+        subreddit = paste0('r/', subreddit)
+    ) |>
+    rename(
+        "Subreddit" = subreddit,
+        "Average Score" = avg_score,
+        "Average Controversiality" = avg_controversiality,
+        "Average Comment Length (Words)" = avg_word_count,
+        "Median Comment Length (Words)" = med_word_count
+    ) |>
+    mutate(Subreddit = factor(Subreddit, levels = sort(unique(Subreddit))) ) |>
+    arrange(Subreddit) |>
+    gt(
+        rowname_col = "Subreddit"
+    ) |>
+    tab_header(
+        title = "Political Subreddit Comments Mentioning Biden or Trump",
+        subtitle = "Summary statistics on the score, controversiality, and length of comments by subreddit"
+    ) |>
+    fmt_number(
+        columns = c(`Average Score`, `Average Controversiality`, `Average Comment Length (Words)`),
+        decimals = 2
+    ) |>
+    fmt_number(
+        columns = c(`Median Comment Length (Words)`),
+        decimals = 0,
+        use_seps = TRUE
+    ) |>
+    tab_source_note(
+        source_note = "Source: Reddit data from June 2023 to July 2024"
+    ) |>
+    tab_spanner(
+        label = "Comment Length (Words)",
+        columns = c("Average Comment Length (Words)", "Median Comment Length (Words)")
+    ) |>
+    cols_label(
+        `Average Comment Length (Words)` = "Average",
+        `Median Comment Length (Words)` = "Median",
+    ) |>
+    tab_style(
+        style = list(
+            cell_borders(sides = c("r"), color = "gray50", weight = px(2))
+        ),
+        locations = cells_body(columns = c(
+            `Average Score`,
+            `Average Controversiality`
+            )
+        )
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(v_align = "middle", align = "center")
+        ),
+        locations = cells_column_labels()
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(v_align = "middle")
+        ),
+        locations = cells_column_spanners()
+    ) |>
+    data_color(
+        columns = `Average Controversiality`,
+        rows = `Average Controversiality` > 0.09,
+        palette = c('#87ceeb')
+    ) |>
+    data_color(
+        columns = `Average Score`,
+        rows = `Average Score` > 11,
+        palette = c('#87ceeb')
+    ) |>
+    data_color(
+        columns = `Average Comment Length (Words)`,
+        rows = `Average Comment Length (Words)` > 33,
+        palette = c('#87ceeb')
+    ) |>
+    data_color(
+        columns = `Median Comment Length (Words)`,
+        rows = `Median Comment Length (Words)` > 18,
+        palette = c('#87ceeb')
+    ) |>
+    data_color(
+        columns = `Average Controversiality`,
+        rows = `Average Controversiality` < 0.03,
+        palette = c('#ffc0cb')
+    ) |>
+    data_color(
+        columns = `Average Score`,
+        rows = `Average Score` < 4,
+        palette = c('#ffc0cb')
+    ) |>
+    data_color(
+        columns = `Average Comment Length (Words)`,
+        rows = `Average Comment Length (Words)` < 15,
+        palette = c('#ffc0cb')
+    ) |>
+    data_color(
+        columns = `Median Comment Length (Words)`,
+        rows = `Median Comment Length (Words)` < 2,
+        palette = c('#ffc0cb')
+    ) |>
+    tab_footnote(
+        footnote = "Pink indicates lower values, while blue indicates higher values."
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(weight = "bold", align = "left")
+        ),
+        locations = cells_title()
+    ) |>
+    tab_style(
+        cell_text(align = "left"),
+        locations = cells_stub()
+    )
+```
+
+From the @tbl-subreddit-comments-summary, we see that r/Republican has the highest average controversiality, followed by r/Libertarian. r/democrats has the lowest average controversiality. We also see that r/Republican has the lowest average score, while r/politics has the highest. r/Libertarian seems to have the longest comments on average, with both the highest mean and median word count per comment.
+
+As seen in @fig-controversiality-bar found that r/Republican had the most percentage of posts being considered controversial, with almost 8%. This was followed by r/Conservative and r/Libertarian. Interestingly, there seems to be a clear political divide between the rate of controversial posts across the aisle, with more conservative subreddits having a higher rate of controversial posts.
+
+![Left leaning subreddits tend to have fewer controversial comments than right leaning subreddits.](plots/controversiality-by-subreddit.png){#fig-controversiality-bar}
+
+Using the link between submissions and comment count, we can see the relationship between the number of comments on a submission, the size of the thread, and the average controversiality of the comments. A comment is rated as either being controversial or not, so a higher average controversiality indicates that more comments on a submission are controversial. Generally, controversiality seems to go down as the number of comments goes up, as seen in @fig-controversiality-vs-comment-count.
+
+![As the size of the thread goes up, the average controversiality goes down.](plots/controversiality-vs-comment-count.png){#fig-controversiality-vs-comment-count}
+
+To investigate further, we divide the plot by subreddit in @fig-controversiality-vs-comment-count-by-subreddit. We gain more information about each subreddit's relationship between controversiality and comment count. We see that r/Conservative and r/politics have more controversial posts, but overall more comments leads to less controversiality. r/Republicans shows that more controversiality leads to more comments, as does r/Libertarian. r/democrats and r/Liberals generally have few controversial posts, and more comments doesn't necessarily stem from more controversiality.
+
+![Left leaning subreddits tend to have low controversiality for all sized threads, while right leaning subreddits tend towards more controversiality.](plots/controversiality-vs-comment-count-by-subreddit.png){#fig-controversiality-vs-comment-count-by-subreddit}
+
+When looking at the top 5 submissions with the most comments per subreddit, we see that the most controversial posts are not necessarily the ones with the most comments. In @tbl-top-5-threads, the most controversial posts do not have the most comments. There is also not a clear pattern between the average controversiality, comment count, and the submission score.
+
+```{r}
+#| label: tbl-top-5-threads
+#| tbl-cap: For each subreddit, the threads with the most comments have a wide range of scores and controversiality levels.
+df3 <- read_csv("tables/top-5-threads-by-subreddit.csv")
+df3 |>
+    rename(
+        "Subreddit" = subreddit,
+        "Number of Comments" = num_comments,
+        "Score" = score,
+        "Average Comment Controversiality" = avg_controversiality,
+    ) |>
+    mutate(
+        Subreddit = paste0('r/', Subreddit)
+    ) |>
+    mutate(
+        Subreddit = factor(Subreddit, levels = sort(unique(Subreddit)))
+    ) |>
+    arrange(Subreddit, desc(`Number of Comments`)) |>
+    group_by(Subreddit) |>
+    dplyr::mutate(color = "") |>
+    dplyr::relocate(color, .after = Subreddit) |>
+    gt(row_group_as_column=TRUE) |>
+    tab_header(
+        title = "Top 5 Threads by Subreddit",
+        subtitle = "Top 5 threads with the most comments for each political subreddit on posts mentioning Biden or Trump"
+    ) |>
+    fmt_number(
+        columns = c(`Number of Comments`, Score),
+        decimals = 0,
+        use_seps = TRUE
+    ) |>
+    fmt_number(
+        columns = `Average Comment Controversiality`,
+        decimals = 2
+    ) |>
+    tab_style(
+        cell_fill('#ffc0cb'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Conservative"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#ff0000'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Republican"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#008000'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/politics"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#0000ff'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/democrats"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#87ceeb'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Liberal"
+        )
+    ) |>
+    tab_style(
+        cell_fill('#ffd700'),
+        cells_body(
+            columns = color,
+            rows = Subreddit == "r/Libertarian"
+        )
+    ) |>
+    cols_label(
+        color = ""
+    ) |>
+    tab_source_note(
+        source_note = "Source: Reddit data from June 2023 to July 2024"
+    ) |>
+    tab_style(
+        style = list(
+            cell_text(weight = "bold", align = "left")
+        ),
+        locations = cells_title()
+    ) |>
+    tab_style(
+        cell_text(align = "left"),
+        locations = cells_stub()
+    )
+```
+
+When we compare average controversiality with submission score, we see that some subreddits tend towards higher scores with less controversiality, while other tend towards lower scores with more controversiality. In @fig-controversiality-score-faceted, we see that r/democrats tends to have high scores with less controversiality, while r/Republicans tends to have lower scores with more controversiality. r/Conservative and r/Libertarian tend to have higher scores with more controversiality. Threads on r/politics tend to have small scores relative to the size of the subreddit, but the controversiality is relatively low.
+
+![Left leaning subreddits tend to have non-controversial threads, even as the score increases. Right leaning subreddits increase in controversiality as the score increases.](plots/controversiality_score_faceted.png){#fig-controversiality-score-faceted}
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/eda.qmd) and [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/more-eda.ipynb).
+::: 
+
+## Distribution of Political Contributions by Top Authors {#sec-top-authors}
+
+Our third EDA goal was to look at the distribution of the candidate mentioning posts by the top authors. In @fig-percent-of-posts, we plotted the number of posts from the top ten authors for each subreddit as a percentage of the total candidate mentioning posts found in that subreddit. One of the most interesting finds in @fig-percent-of-posts is that r/Republican has two authors that make up over 50% of all posts in the subreddit. This is followed by the third highest posting author making up less than 4% of the remianing posts, and eaech following author making up a slightly smaller percent. r/democrats shares a similar overall distribution, with one author comprising around 7% of the posts followed by a steep drop to the number two author who made up roughly 2% of the posts. The same steady decrease can be observed in the subsequent authors. r/Conservative, r/Liberal, and r/Libertarian share similarly skewed distributions, with a rapid decrease in percentage from the top poster to each subsequent poster before evening out at around 1% by the tenth author. r/politics bucks the trend slightly as the highest posters make up a smaller percentage of the total posts, with the top poster making up around 1% of the total posts. This is not suprising given that r/politics is by far the largest subreddit in our analysis.
+
+![Each subreddit has regular posters that make up a large percentage of the total posts mentioning Biden or Trump.](plots/percent_of_posts.png){#fig-percent-of-posts}
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/eda/EDA.ipynb).
+:::

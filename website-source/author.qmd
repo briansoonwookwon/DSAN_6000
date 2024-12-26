@@ -1,0 +1,63 @@
+This website was created and designed by Brian Kwon, Aaron Schwall, and Marion Bauman as part of DSAN 6000: Big Data, a graduate level data science course at Georgetown University.
+
+#### Marion Bauman
+
+:::: {.columns}
+
+:::{.column width="15%"}
+
+![](imgs/marion.jpeg){width=80%}
+
+:::
+
+::: {.column width="5%"}
+:::
+
+:::{.column width="80%"}
+
+Marion Bauman is graduating from the Master of Science in Data Science program at Georgetown University in December 2024. She has worked as a data aanalyst at a consulting firm, supporting the Department of Veterans Affairs with data analysis and visualization. She currently works as a teaching assistant for the Advanced Natural Language Processing course at Georgetown, and she has an interest in natural language processing and machine learning. Check out her work on [GitHub](https://github.com/mfgeary) or connect with her on [LinkedIn](https://www.linkedin.com/in/marion-geary-bauman/).
+:::
+
+::::
+
+#### Brian Kwon
+
+:::: {.columns}
+
+:::{.column width="15%"}
+
+![](imgs/brian.jpeg){width=80%}
+
+:::
+
+::: {.column width="5%"}
+:::
+
+:::{.column width="80%"}
+
+Brian Kwon is a graduate student at Georgetown University studying data science. He is currently working as a teaching assistant for the deep learning course. Find him on [LinkedIn](https://www.linkedin.com/in/brian-kwon-b4258317a/) and [GitHub](https://github.com/briansoonwookwon).
+
+:::
+
+::::
+
+#### Aaron Schwall
+
+:::: {.columns}
+
+:::{.column width="15%"}
+
+![](imgs/aaron.jpeg){width=80%}
+
+:::
+
+::: {.column width="5%"}
+:::
+
+:::{.column width="80%"}
+
+Aaron Schwall is studying data science at Georgetown University. He currently works as a software engineer at L3Harris Technologies. Find him on [LinkedIn](https://www.linkedin.com/in/aaron-schwall-1043a719a/) and [GitHub](https://github.com/aaron-sch).
+
+:::
+
+::::

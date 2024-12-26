@@ -1,0 +1,28 @@
+---
+title: Conclusion
+---
+
+## Summary
+
+Throughout our research on political discussions occuring on Reddit, we uncovered the divide between right leaning and left leaning conversations. While politics of all kinds are discussed on the forum, we identified trends that highlight the unique ways that users communicate within distinctive subcommunities. 
+
+In our initial exploration of the data, we found that political conversations across all ends of the political spectrum tend to focus more on Trump than Biden. While this can change over time within subreddits, this trend is especially apparent on general political subreddits like `r/politics`. We also found that left leaning subreddits strayed away from controversial topics, while right leaning subreddits were much more likely to have controversial threads as demonstrated in @fig-threads. In our initial exploration of the data, we found that political conversations across all ends of the political spectrum tend to focus more on Trump than Biden. While this can change over time within subreddits, this trend is especially apparent on general political subreddits like `r/politics`. We also found that left leaning subreddits strayed away from controversial topics, while right leaning subreddits were much more likely to have controversial threads as demonstrated in @fig-threads. This analysis of threads also showed that generally, the more comments a thread has, the less controversial it is, indicating that users may be more likely to engage in discussions that are less controversial. Analyses also showed how a few users dominate conversations in all subreddits, with a small number of users contributing a large percent of posts to each subreddit.
+
+![Left leaning subreddits tend to have low controversiality for all sized threads, while right leaning subreddits tend towards more controversiality.](plots/controversiality-vs-comment-count-by-subreddit.png){#fig-threads}
+
+Our analysis of Reddit political discussion revealed distinct sentiment and lexical trends across six subreddits. Sentiment analysis showed `r/politics` consistently had low positive sentiment, while `r/Libertarian` exhibited the most variability, often favoring Trump. Lexical analysis using `CountVectorizer`, `LDA`, and `TF-IDF` highlighted key terms like `hunter`, `border`, and `israel`, which varied in prominence by subreddit and sentiment. Google Trends partially validated these findings, with some overlap in related queries. Engagement metrics further illustrated extremes, with `r/Democrats` achieving the highest submission scores and comment counts, while `r/Libertarian` displayed stark variability. These patterns reflect subreddit-specific biases and their impact on political discourse. 
+
+Our machine learning analysis of subreddit submission data yielded mixed results. Across our experiments we found tree based models to give the best results. We were able to predict the subreddit of a post 56% of the time, versus a most common feature accuracy 17%. We got better results with predicting the score of a subreddit, where we were able to achieve a 74% accuracy with a decision tree model. Score can be used as a proxy for popularity. We found that the self selection of subreddit was a poor proxy for political leaning. Furthermore, this proxy was hard to predict with our data. For political leaning prediction, 2e achieved an accuracy of 83%, which was only 6% over the most common feature accuracy of 77%. The last ML experiment was to predict the number of comments. Here we were able to achieve an accuracy of 76%. The number of comments can be used as a proxy for the controversiality of a post, as people will comment on and answer comments more frequently on controversial posts. In @fig-roc, we see that all four predictive modeling experiments have a ROC curve that is above the baseline, and it's clear that our popularity prediction model was the most successful. All models give us insight into the separation of the data, allowing us to understand the differences in text between the subreddits.
+
+![ROC Curves for Predictive Models](plots/all_roc_curves.png){#fig-roc}
+
+
+## Future Work
+
+Our project analyzed a one-year period from June 2023 to July 2024, capturing trends in political subreddits during this time. Exploring earlier or more recent data could reveal how subreddit dynamics evolve with political events.
+
+There are many possibilities for filtering the data, such as by subreddits, sentiments, presidential candidates, or dummy variables based on specific terms. However, these options present challenges when trying to create reasonable and interpretable visualizations, as the complexity of the filters can obscure the clarity of the figures.
+
+Our analysis was limited to political subreddits, and we were unable to expand into non-political subreddits. Exploring discussions in broader contexts could provide a more comprehensive understanding of how political discourse permeates other online communities.
+
+While we focused heavily on submissions, future work should examine submission-comment interactions to better understand how discussions develop and how comments shape or respond to initial posts. This would provide deeper insights into the conversational dynamics of political subreddits.

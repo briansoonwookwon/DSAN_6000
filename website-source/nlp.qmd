@@ -1,0 +1,479 @@
+---
+title: Natural Language Processing
+---
+
+# Executive summary
+
+Sentiment analysis plays a critical role in understanding Reddit's political discussion climate, revealing the emotional tone of conversations about Presidential candidates Donald Trump and Joe Biden. Across subreddits, most submissions exhibited negative sentiment, but the percentage of positive sentiment fluctuated over time and varied by subreddit. Submissions about Trump showed higher positive sentiment in subreddits aligned with his political party, and the reverse was true for Biden. By comparing sentiment trends with Presidential Job Approval Rates, we gained a nuanced understanding of these dynamics, noting that approval rates often aligned between the positive sentiment percentages of politically opposing subreddits.
+
+We then analyzed text data to uncover patterns in language reflecting key themes in political discourse. Using `CountVectorizer` and `Latent Dirichlet Allocation (LDA)`, we identified trends in word usage that formed distinct topics across subreddits. Cross-referencing these dominant terms with Google Trends confirmed their alignment with broader public interest and search behaviors. Further, calculating `Term Frequency-Inverse Document Frequency (TF-IDF)` scores highlighted the importance of specific words within individual subreddits and their influence on submission sentiment.
+
+Finally, we synthesized these findings to assess the distinctiveness of each subreddit. By examining correlations between sentiment, scores, and post popularity, we found that `r/Libertarian` was the most distinct, while `r/politics` appeared the most moderate among the six subreddits analyzed.
+
+# Analysis report
+
+To analyze Reddit sentiment, we concatenated submission titles and bodies, removed special characters and numbers, and applied PySpark NLP models. 
+
+### Comparison Between Reddit Sentiment and Presidential Job Approval Rates {#comparison}
+
+Our analysis began by looking at the sentiment distribution across subreddits. As illustrated in @fig-sentiment-distribution, nearly 60% of Biden-related submissions had negative sentiment across all subreddits. Trump-related submissions displayed similar trends, except in `r/Libertarian`, where positive sentiments outweighed negatives, with fewer than 40% negative sentiments.
+
+![Sentiment Distribution by two candidates](plots/sentiments_histogram_stacked.png){#fig-sentiment-distribution}
+
+Then we examined how sentiment trends evolved over time. As shown in @fig-all-sentiment-over-time, the percentage of positive sentiments fluctuates significantly across subreddits. For example, `r/politics` consistently exhibits low positive sentiment, while `r/Libertarian` shows the most variability. These differences may relate to subreddit membership sizes, with` r/politics` having a much larger member base than `r/Libertarian`.
+
+![Postive Sentiments by subreddits over time](plots/all_positive_sentiments_overtime.png){#fig-all-sentiment-over-time}
+
+We then filtered submissions to focus on posts about each presidential candidate during specific periods. In Trump-related posts, `r/Republican` and `r/Conservative` generally showed higher positive sentiment compared to subreddits aligned with opposing views. Conversely, Biden-related posts exhibited higher positive sentiment in `r/Democrats` and `r/Liberal`. Notably, `r/politics` maintained lower positive sentiment for both candidates, while `r/Libertarian` showed pronounced peaks favoring Trump over Biden, as seen in @fig-trump-sentiment-over-time and @fig-biden-sentiment-over-time.
+
+![Postive Sentiments on Trump related posts](plots/trump_positive_sentiments_overtime.png){#fig-trump-sentiment-over-time}
+
+![Postive Sentiments on Biden related posts](plots/biden_positive_sentiments_overtime.png){#fig-biden-sentiment-over-time}
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/nlp/sentiment_analysis.ipynb).
+::: 
+
+### Lexical Trends Analysis of Key Terms in Trump and Biden Related Reddit Submissions {#lexical-trends}
+
+In addition to sentiment analysis, we employed three NLP/ML models—`CountVectorizer`, `LDA`, and `TF-IDF`—to explore lexical patterns in Reddit submissions. We processed the text by tokenizing, normalizing, and removing stopwords, ensuring clean data for word frequency analysis and topic modeling.
+
+#### CountVectorizer
+
+As seen in @fig-word-cloud, generic terms like `case` and `court` initially dominated word frequency counts across all subreddits. After filtering out these terms, subreddit-specific word trends emerged.
+
+![Most common words in all 6 subreddits](plots/word_cloud.png){#fig-word-cloud}
+
+For instance, in [Table 1](#table-word-counts), terms such as `hunter` and `border` were prominent in `r/Conservative` and `r/Republican`. In contrast, `harris` was most frequent in `r/Democrats`, reflecting Kamala Harris's role as Vice President. Meanwhile, `israel` and `war` stood out in `r/Libertarian`, highlighting its unique discourse. Common terms like `news` and `administration` still appeared across most subreddits.
+
+<table id="table-word-counts" border="1" class="dataframe" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+  <thead>
+    <tr style="background-color: #f2f2f2; text-align: center; font-weight: bold;">
+      <th></th>
+      <th>r/Conservative</th>
+      <th>r/ Republican</th>
+      <th>r/democrats</th>
+      <th>r/Liberal</th>
+      <th>r/Libertarian</th>
+      <th>r/politics</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="text-align: center; background-color: #fafafa;">
+      <th>0</th>
+      <td style="background-color: #90ee90">hunter (6.08%)</td>
+      <td style="background-color: #90ee90">hunter (8.07%)</td>
+      <td style="background-color: #add8e6">harris (3.87%)</td>
+      <td style="background-color: #d8bfd8">news (4.73%)</td>
+      <td>convention (6.6%)</td>
+      <td style="background-color: #add8e6">harris (2.88%)</td>
+    </tr>
+    <tr style="text-align: center;">
+      <th>1</th>
+      <td style="background-color: #ffcccb">border (2.67%)</td>
+      <td style="background-color: #ffcccb">border (3.9%)</td>
+      <td>voters (3.71%)</td>
+      <td>voters (4.64%)</td>
+      <td style="background-color: #ffffe0">israel (6.24%)</td>
+      <td>poll (2.6%)</td>
+    </tr>
+    <tr style="text-align: center; background-color: #fafafa;">
+      <th>2</th>
+      <td>white (2.31%)</td>
+      <td>report (2.51%)</td>
+      <td style="background-color: #f4a460">administration (3.34%)</td>
+      <td>right (4.17%)</td>
+      <td>war (4.81%)</td>
+      <td>cnn (2.58%)</td>
+    </tr>
+    <tr style="text-align: center;">
+      <th>3</th>
+      <td>poll (2.14%)</td>
+      <td>fbi (2.13%)</td>
+      <td style="background-color: #d8bfd8">news (3.03%)</td>
+      <td>win (4.08%)</td>
+      <td>right (4.28%)</td>
+      <td>documents (2.47%)</td>
+    </tr>
+    <tr style="text-align: center; background-color: #fafafa;">
+      <th>4</th>
+      <td style="background-color: #f4a460">administration (2.05%)</td>
+      <td>white (2.07%)</td>
+      <td>state (2.92%)</td>
+      <td>democracy (3.8%)</td>
+      <td style="background-color: #f4a460">administration (4.1%)</td>
+      <td>georgia (2.47%)</td>
+    </tr>
+    <tr style="text-align: center;">
+      <th>5</th>
+      <td>media (2.02%)</td>
+      <td style="background-color: #d8bfd8">news (2.06%)</td>
+      <td>million (2.44%)</td>
+      <td>voting (3.53%)</td>
+      <td>want (3.92%)</td>
+      <td>money (2.41%)</td>
+    </tr>
+    <tr style="text-align: center; background-color: #fafafa;">
+      <th>6</th>
+      <td style="background-color: #d8bfd8">news (2.0%)</td>
+      <td>doj (2.0%)</td>
+      <td>white (2.14%)</td>
+      <td>support (3.53%)</td>
+      <td style="background-color: #90ee90">hunter (3.92%)</td>
+      <td>voters (2.41%)</td>
+    </tr>
+    <tr style="text-align: center;">
+      <th>7</th>
+      <td>voters (1.9%)</td>
+      <td>illegal (1.94%)</td>
+      <td>federal (2.11%)</td>
+      <td>wins (3.43%)</td>
+      <td>support (3.74%)</td>
+      <td>presidential (2.41%)</td>
+    </tr>
+    <tr style="text-align: center; background-color: #fafafa;">
+      <th>8</th>
+      <td>state (1.89%)</td>
+      <td>poll (1.82%)</td>
+      <td>states (2.07%)</td>
+      <td>want (3.43%)</td>
+      <td>crimes (3.57%)</td>
+      <td style="background-color: #d8bfd8">news (2.4%)</td>
+    </tr>
+    <tr style="text-align: center;">
+      <th>9</th>
+      <td>report (1.85%)</td>
+      <td>rally (1.73%)</td>
+      <td>support (2.04%)</td>
+      <td>legal (3.34%)</td>
+      <td>billion (3.21%)</td>
+      <td>classified (2.29%)</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size: 14px;">Table 1: Top 10 Word Counts in 6 subreddits</p>
+
+#### Latent Dirichlet Allocation (LDA)
+
+In this part, we used LDA for our topic modeling to explore the underlying themes in the data and understand the distribution of terms across topics. We uncovered themes aligned with CountVectorizer findings. Key terms like `hunter`, `border`, and `harris` were grouped into distinct topics. The term `israel`, although most prevalent in `r/Libertarian`, also appeared in a topic alongside `war` and `ukraine`, suggesting a thematic focus on international issues.
+
+<table id="table-topic-words" border="1" class="dataframe" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Topic 1</th>
+      <th>Topic 2</th>
+      <th>Topic 3</th>
+      <th>Topic 4</th>
+      <th>Topic 5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>judge</td>
+      <td>coming</td>
+      <td style="background-color: #ffffe0">israel</td>
+      <td style="background-color: #ffcccb">border</td>
+      <td>court</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>case</td>
+      <td>lies</td>
+      <td>rally</td>
+      <td style="background-color: #f4a460">administration</td>
+      <td>voters</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td style="background-color: #90ee90">hunter</td>
+      <td>warns</td>
+      <td>money</td>
+      <td>texas</td>
+      <td>democrats</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>trial</td>
+      <td>house</td>
+      <td>trial</td>
+      <td>wall</td>
+      <td>campaign</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>documents</td>
+      <td style="background-color: #d8bfd8">news</td>
+      <td>war</td>
+      <td>crisis</td>
+      <td>house</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>classified</td>
+      <td>epstein</td>
+      <td>campaign</td>
+      <td>student</td>
+      <td>debate</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>special</td>
+      <td>heard</td>
+      <td>ukraine</td>
+      <td>gaza</td>
+      <td>poll</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>court</td>
+      <td>country</td>
+      <td>guilty</td>
+      <td>policy</td>
+      <td>supreme</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>order</td>
+      <td>white</td>
+      <td>hush</td>
+      <td>plan</td>
+      <td style="background-color: #add8e6">harris</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>fbi</td>
+      <td style="background-color: #90ee90">hunter</td>
+      <td>term</td>
+      <td>netanyahu</td>
+      <td>presidential</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size: 14px;">Table 2: Top 10 Words in 5 Topics</p>
+
+#### Google Trends
+
+Since we found out dominant words formed a political discussion, we compared them with related topics and queries on Google Trends for Trump and Biden. Terms like `hunter` and `israel` appeared as related queries for Biden, while no other overlap was observed. 
+
+<table id="table-google-trends" border="1" class="dataframe" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+    <thead>
+        <tr style="text-align: right;">
+            <th></th>
+            <th>Trump</th>
+            <th>Biden</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>0</th>
+            <td>debate (22)</td>
+            <td style="background-color: #90ee90">hunter (25)</td>
+        </tr>
+        <tr>
+            <th>1</th>
+            <td>united (17)</td>
+            <td>united (18)</td>
+        </tr>
+        <tr>
+            <th>2</th>
+            <td>court (17)</td>
+            <td style="background-color: #ffffe0">israel (13)</td>
+        </tr>
+        <tr>
+            <th>3</th>
+            <td>media (15)</td>
+            <td>debate (13)</td>
+        </tr>
+        <tr>
+            <th>4</th>
+            <td>shot (14)</td>
+            <td>impeachment (12)</td>
+        </tr>
+        <tr>
+            <th>5</th>
+            <td>trial (14)</td>
+            <td>speech (10)</td>
+        </tr>
+        <tr>
+            <th>6</th>
+            <td>indictment (12)</td>
+            <td>jill (10)</td>
+        </tr>
+        <tr>
+            <th>7</th>
+            <td>speaker (12)</td>
+            <td>house (9)</td>
+        </tr>
+        <tr>
+            <th>8</th>
+            <td>mug (11)</td>
+            <td>conference (9)</td>
+        </tr>
+        <tr>
+            <th>9</th>
+            <td>house (11)</td>
+            <td>union (9)</td>
+        </tr>
+    </tbody>
+</table>
+<p style="font-size: 14px;">Table 3: Google Trends related-search terms on Trump and Biden</p>
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/nlp/lexical_analysis.ipynb).
+::: 
+
+### Impact of Dominant Terms on Shaping Political Discussions on Reddit {#impact}
+
+Figuring out some terms dominating the political discussion on those subreddits, we focuse on how important they are shaping the political discussion. We used TF-IDF to calculate the importance score of those terms.
+
+Scores were highly skewed across subreddits. Most subreddits had an average score around 4, but in `r/Liberal`, scores were more evenly distributed in positive sentiment submissions. Conversely, in `r/Libertarian`, submissions with negative sentiment showed a smoother score distribution due to potential fewer positive submissions.
+
+![TF-IDF Score on term `administration`](plots/tf_idf.png){#fig-tfidf}
+
+Next, we checked out the term `border` and `israel`. As [Table 4](#table-border) and [Table 5](#table-israel) show, these two words are very distinct on specific subreddit and sentiment. The term `border` had a higher average importance score in r/Democrats for negative sentiment submissions. Similarly, the term `israel` had a higher average score in `r/politics` for neutral sentiment submissions.
+
+<table id="table-border" border="1" class="dataframe" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+  <thead>
+    <tr>
+      <th></th>
+      <th>subreddit</th>
+      <th colspan="3" halign="left">TF_IDF Score on 'Border'</th>
+    </tr>
+    <tr>
+      <th>sentiment</th>
+      <th></th>
+      <th>negative</th>
+      <th>neutral</th>
+      <th>positive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Conservative</td>
+      <td>4.400743</td>
+      <td>4.282261</td>
+      <td>4.429995</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Liberal</td>
+      <td>4.096076</td>
+      <td>0</td>
+      <td>4.096076</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Libertarian</td>
+      <td>4.096076</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Republican</td>
+      <td>4.804039</td>
+      <td>4.973807</td>
+      <td>4.232611</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>democrats</td>
+      <td style="background-color: #ffcccb">6.085598</td>
+      <td>4.096076</td>
+      <td>4.096076</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>politics</td>
+      <td>4.242364</td>
+      <td>4.247782</td>
+      <td>4.159093</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size: 14px;">Table 4: TF_IDF Score on term 'border' by Sentiments and Subreddits</p>
+
+<table id="table-israel" border="1" class="dataframe" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+  <thead>
+    <tr>
+      <th></th>
+      <th>subreddit</th>
+      <th colspan="3" halign="left">TF_IDF Score on "Israel"</th>
+    </tr>
+    <tr>
+      <th>sentiment</th>
+      <th></th>
+      <th>negative</th>
+      <th>neutral</th>
+      <th>positive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Conservative</td>
+      <td>4.336109</td>
+      <td>0</td>
+      <td>4.173768</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Liberal</td>
+      <td>5.266312</td>
+      <td>0</td>
+      <td>4.069423</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Libertarian</td>
+      <td>5.634586</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Republican</td>
+      <td>4.461657</td>
+      <td>0</td>
+      <td>4.069423</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>democrats</td>
+      <td>4.853890</td>
+      <td>4.069423</td>
+      <td>4.069423</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>politics</td>
+      <td>4.385980</td>
+      <td style="background-color: #ffffe0">8.138845</td>
+      <td>4.069424</td>
+    </tr>
+  </tbody>
+</table>
+<p style="font-size: 14px;">Table 5: TF_IDF Score on term 'israel' by Sentiments and Subreddits</p>
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/nlp/tfidf.ipynb).
+::: 
+
+### Identifying the Most Extreme Subreddits in Political Discourse {#extreme}
+
+Seeing the general negative sentiments trend, lexical trends, and importance scores on selected terms, we decided to see how extreme discussions these subreddits have. As we showed in @fig-sentiment-distribution, @fig-trump-sentiment-over-time, and @fig-biden-sentiment-over-time, `r/Libertarian` has the most shifting sentiments over time with higher positive sentiments on Trump related submissions than on Biden related submissions. This may shaped their discussion topics as `israel` and `war` appeared in top 10 most frequent words in [Table 1](#table-word-counts). On other terms, the subreddit has only negative sentiments on term `border` and `israel` showing their political discussion was very controversial. 
+
+Next thing we considered was how sentiments impact on submissions' number of comments and popularity score. We found out that neutral sentiment submissions about Biden in `r/Democrats` garnered the highest comment counts. Conversely, Trump-related posts with negative sentiment attracted more comments in `r/Conservative`, `r/Liberal`, and `r/Libertarian`. Submissions in `r/Republican` had fewer comments overall. On thing to note here is that there was no comments on neutral sentiment submissions about Trump in `r/Libertarian`. This showed us that the subreddits may be more biploar than the other subreddits.
+
+![Average Number of Comments by sentiments and subreddits](plots/avg_comments_heatmap.png){#fig-avg-comments}
+
+When it comes to the score, submissions in `r/Democrats` consistently had the highest scores across all sentiment categories. Meanwhile, `r/Libertarian` showed again extreme variability, with Trump-related neutral sentiment submissions averaging a score of 1, compared to 89 for neutral Biden-related submissions.
+
+![Average Score by sentiments and subreddits](plots/avg_score_heatmap.png){#fig-avg-score}
+
+::: {.callout-note appearance="simple"}
+The code used for this section is available [here](https://github.com/gu-dsan6000/fall-2024-project-team-01/blob/main/code/nlp/sentiment_analysis.ipynb).
+::: 
